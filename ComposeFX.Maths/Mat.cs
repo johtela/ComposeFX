@@ -125,8 +125,10 @@
         public static bool ApproxEquals<M> (M mat, M other, float epsilon)
             where M : struct, IMat<M, float>
         {
-            for (int c = 0; c < mat.Columns; c++)
-                for (int r = 0; r < mat.Rows; r++)
+			var cols = mat.Columns;
+			var rows = mat.Rows;
+            for (int c = 0; c < cols; c++)
+                for (int r = 0; r < rows; r++)
                     if (!mat[c, r].ApproxEquals (other[c, r], epsilon)) return false;
             return true;
         }
@@ -137,14 +139,16 @@
             return ApproxEquals<M> (mat, other, 0.000001f);
         }
 
-        public static T[] ToArray<M, T> (M mat)
+        public static T[,] ToArray<M, T> (M mat)
             where M : struct, IMat<M, T>
             where T : struct, IEquatable<T>
         {
-            var result = new T[mat.Rows * mat.Columns];
-            for (int i = 0, c = 0; c < mat.Columns; c++)
-                for (int r = 0; r < mat.Rows; r++)
-                    result[i++] = mat[c, r];
+			var cols = mat.Columns;
+			var rows = mat.Rows;
+			var result = new T[cols, rows];
+            for (int c = 0; c < cols; c++)
+                for (int r = 0; r < rows; r++)
+                    result[c, r] = mat[c, r];
             return result;
         }
 
@@ -162,81 +166,78 @@
             return result;
         }
 
-        public static M FromArray<M, T> (T[] array)
+        public static M FromArray<M, T> (T[,] array)
             where M : struct, IMat<M, T>
             where T : struct, IEquatable<T>
         {
-            var result = default (M);
-            for (int i = 0, c = 0; c < result.Columns; c++)
-                for (int r = 0; r < result.Rows; r++, i = (i + 1) % array.Length)
-                    result[c, r] = array[i];
-            return result;
+			return default (M).FromArray (array);
         }
 
         public static M FromJaggedArray<M, T> (T[][] array)
             where M : struct, IMat<M, T>
             where T : struct, IEquatable<T>
         {
-            var result = default (M);
-            for (int r = 0; r < array.Length; r++)
-                for (int c = 0; c < array[r].Length; c++)
-                    result[c, r] = array[r][c];
-            return result;
-        }
-
-        public static N ConvertTo<M, N, T> (this M mat)
-            where M : struct, IMat<M, T>
-            where N : struct, IMat<N, T>
-            where T : struct, IEquatable<T>
-        {
-            var res = default (N);
-            for (int c = 0; c < Math.Min (mat.Columns, res.Columns); c++)
-                for (int r = 0; r < Math.Min (mat.Rows, res.Rows); r++)
-                    res[c, r] = mat[c, r];
-            return res;
+            var mat = default (M);
+			var cols = mat.Columns;
+			var rows = mat.Rows;
+			var res = new T[cols, rows];
+            for (int r = 0; r < Math.Min (rows, array.Length); r++)
+                for (int c = 0; c < Math.Min (cols, array[r].Length); c++)
+                    res[c, r] = array[r][c];
+            return mat.FromArray (res);
         }
 
         public static M Transpose<M, T> (M mat)
             where M : struct, ISquareMat<M, T>
             where T : struct, IEquatable<T>
         {
-            var result = default (M);
-            for (int r = 0; r < mat.Rows; r++)
-                for (int c = 0; c < mat.Columns; c++)
-                    result[r, c] = mat[c, r];
-            return result;
+			var cols = mat.Columns;
+			var rows = mat.Rows;
+			var res = new T[cols, rows];
+			for (int r = 0; r < rows; r++)
+                for (int c = 0; c < cols; c++)
+                    res[r, c] = mat[c, r];
+            return mat.FromArray (res);
         }
 
         public static M Identity<M> ()
             where M : struct, ISquareMat<M, float>
         {
-            var result = default (M);
-            for (int c = 0; c < result.Columns; c++)
-                result[c, c] = 1f;
-            return result;
+			var mat = default (M);
+			var cols = mat.Columns;
+			var res = new float[cols, cols];
+			for (int c = 0; c < cols; c++)
+                res[c, c] = 1f;
+            return mat.FromArray (res);
         }
 
         public static M Translation<M> (params float[] offsets)
             where M : struct, ISquareMat<M, float>
         {
-            var res = Identity<M> ();
-            if (res.Rows <= offsets.Length)
-                throw new ArgumentOutOfRangeException ("offsets", "Too many offsets.");
-            var lastcol = res.Columns - 1;
+			var mat = default (M);
+			var cols = mat.Columns;
+			if (cols <= offsets.Length)
+				throw new ArgumentOutOfRangeException ("offsets", "Too many offsets.");
+			var res = new float[cols, cols];
+			for (int c = 0; c < cols; c++)
+				res[c, c] = 1f;
+			var lastcol = cols - 1;
             for (int i = 0; i < offsets.Length; i++)
                 res[lastcol, i] = offsets[i];
-            return res;
+            return mat.FromArray (res);
         }
 
         public static M Scaling<M> (params float[] factors)
             where M : struct, ISquareMat<M, float>
         {
-            var res = Identity<M> ();
-            if (factors.Length > res.Columns || factors.Length > res.Rows)
+			var mat = default (M);
+			var cols = mat.Columns;
+			if (factors.Length > cols)
                 throw new ArgumentOutOfRangeException ("factors", "Too many factors.");
-            for (int i = 0; i < factors.Length; i++)
-                res[i, i] = factors[i];
-            return res;
+			var res = new float[cols, cols];
+			for (int i = 0; i < cols; i++)
+                res[i, i] = i < factors.Length ? factors[i] : 1f;
+            return mat.FromArray (res);
         }
 		
 		public static Mat4 ScalingPerpendicularTo (Vec3 vec, Vec2 factors)
@@ -251,58 +252,82 @@
         public static M RotationX<M> (float alpha)
             where M : struct, ISquareMat<M, float>
         {
-            var res = Identity<M> ();
-            var sina = (float)Math.Sin (alpha);
-            var cosa = (float)Math.Cos (alpha);
-            res[1, 1] = cosa;
-            res[1, 2] = sina;
-            res[2, 1] = -sina;
-            res[2, 2] = cosa;
-            return res;
+			var mat = default (M);
+			var cols = mat.Columns;
+			if (cols < 3)
+				throw new ArgumentOutOfRangeException ("X-rotation requires at least 3x3 matrix");
+			var res = new float[cols, cols];
+			var sina = (float)Math.Sin (alpha);
+			var cosa = (float)Math.Cos (alpha);
+			res[0, 0] = 1f;
+			res[1, 1] = cosa;
+			res[1, 2] = sina;
+			res[2, 1] = -sina;
+			res[2, 2] = cosa;
+			if (cols > 3)
+				res[3, 3] = 1f;
+			return mat.FromArray (res);
         }
 
         public static M RotationY<M> (float alpha)
             where M : struct, ISquareMat<M, float>
         {
-            var res = Identity<M> ();
-            var sina = (float)Math.Sin (alpha);
+			var mat = default (M);
+			var cols = mat.Columns;
+			if (cols < 3)
+				throw new ArgumentOutOfRangeException ("Y-rotation requires at least 3x3 matrix");
+			var res = new float[cols, cols];
+			var sina = (float)Math.Sin (alpha);
             var cosa = (float)Math.Cos (alpha);
             res[0, 0] = cosa;
             res[0, 2] = -sina;
+			res[1, 1] = 1f;
             res[2, 0] = sina;
-            res[2, 2] = cosa;
-            return res;
-        }
+			res[2, 2] = cosa;
+			if (cols > 3)
+				res[3, 3] = 1f;
+			return mat.FromArray (res);
+		}
 
-        public static M RotationZ<M> (float alpha)
+		public static M RotationZ<M> (float alpha)
             where M : struct, ISquareMat<M, float>
         {
-            var res = Identity<M> ();
-            var sina = (float)Math.Sin (alpha);
+			var mat = default (M);
+			var cols = mat.Columns;
+			var res = new float[cols, cols];
+			var sina = (float)Math.Sin (alpha);
             var cosa = (float)Math.Cos (alpha);
             res[0, 0] = cosa;
             res[0, 1] = sina;
             res[1, 0] = -sina;
             res[1, 1] = cosa;
-            return res;
-        }
+			if (cols > 2)
+			{
+				res[2, 2] = 1f;
+				if (cols > 3)
+					res[3, 3] = 1f;
+			}
+			return mat.FromArray (res);
+		}
 
 		public static M RelativeTo<M, V> (this M mat, V vec)
 			where M : struct, ISquareMat<M, float>
 			where V : struct, IVec<V, float>
 		{
-			return Translation<M> (vec.ToArray<V, float> ())
+			return Translation<M> (vec.ToArray ())
 				.Multiply (mat)
-				.Multiply (Translation<M> (vec.Multiply (-1f).ToArray<V, float> ()));
+				.Multiply (Translation<M> (vec.Multiply (-1f).ToArray ()));
 		}
 
 		public static M RemoveTranslation<M> (this M mat)
 			where M : struct, ISquareMat<M, float>
 		{
-			var lastcol = mat.Columns - 1;
-			for (int i = 0; i < mat.Rows - 1; i++)
-				mat[lastcol, i] = 0f;
-			return mat;
+			var cols = mat.Columns;
+			var res = new float[cols, cols];
+			var lastcol = cols - 1;
+			for (int i = 0; i < cols - 1; i++)
+				res[lastcol, i] = 0f;
+			return mat.FromArray (res);
 		}
 
         public static float Determinant<M> (M mat)
@@ -375,12 +400,22 @@
 
 		public static V Transform<V> (this Mat4 mat, V point)
 			where V : struct, IVec<V, float>
-        {
-			var v = new Vec4 (1f);
-			for (int i = 0; i < point.Dimensions; i++)
-				v [i] = point [i];
-			v = mat * v;
-			return Vec.FromArray<V, float> (v.X, v.Y, v.Z, v.W);
+		{
+			Vec4 vec = new Vec4 ();
+			switch (point)
+			{
+				case Vec2 v:
+					vec = new Vec4 (v, 1f, 1f);
+					break;
+				case Vec3 v:
+					vec = new Vec4 (v, 1f);
+					break;
+				case Vec4 v:
+					vec = v;
+					break;
+			}
+			var res = mat * vec;
+			return point.FromArray (res.X, res.Y, res.Z, res.W);
         }
 
         /// <summary>
