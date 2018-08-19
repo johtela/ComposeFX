@@ -107,11 +107,19 @@
 		}
 
 		/// <summary>
-		/// Initialize vector from array.
+		/// Initialize vector from an array.
 		/// </summary>
 		public Vec4 FromArray (params float[] components)
 		{	
 			return new Vec4 (components[0], components[1], components[2], components[3]);
+		}
+
+		/// <summary>
+		/// Copy vector components to an array.
+		/// </summary>
+		public float[] ToArray ()
+		{	
+			return new float[] { X, Y, Z, W };
 		}
 
 		/// <summary>

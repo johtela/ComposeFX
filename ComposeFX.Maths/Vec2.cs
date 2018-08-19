@@ -83,11 +83,19 @@
 		}
 
 		/// <summary>
-		/// Initialize vector from array.
+		/// Initialize vector from an array.
 		/// </summary>
 		public Vec2 FromArray (params float[] components)
 		{	
 			return new Vec2 (components[0], components[1]);
+		}
+
+		/// <summary>
+		/// Copy vector components to an array.
+		/// </summary>
+		public float[] ToArray ()
+		{	
+			return new float[] { X, Y };
 		}
 
 		/// <summary>

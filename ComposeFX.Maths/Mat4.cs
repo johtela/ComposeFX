@@ -111,7 +111,16 @@
 			Column3 = new Vec4 (m30, m31, m32, m33); 
 		}
 
- 		/// <summary>
+ 		public Mat4 FromArray (float[,] elems)
+		{
+			return new Mat4 (
+				elems[0, 0], elems[0, 1], elems[0, 2], elems[0, 3], 
+				elems[1, 0], elems[1, 1], elems[1, 2], elems[1, 3], 
+				elems[2, 0], elems[2, 1], elems[2, 2], elems[2, 3], 
+				elems[3, 0], elems[3, 1], elems[3, 2], elems[3, 3]);
+		}
+
+		/// <summary>
 		/// Number of columns in the matrix.
 		/// </summary>
 		public int Columns
@@ -199,12 +208,11 @@
             if (vec.Dimensions != Columns)
                 throw new ArgumentException (
 					string.Format ("Cannot multiply {0}x{1} matrix with {2}D vector", Columns, Rows, vec.Dimensions), "vec");
-            var res = default (V); 
-			res[0] = Column0.X * vec[0] + Column1.X * vec[1] + Column2.X * vec[2] + Column3.X * vec[3];
-			res[1] = Column0.Y * vec[0] + Column1.Y * vec[1] + Column2.Y * vec[2] + Column3.Y * vec[3];
-			res[2] = Column0.Z * vec[0] + Column1.Z * vec[1] + Column2.Z * vec[2] + Column3.Z * vec[3];
-			res[3] = Column0.W * vec[0] + Column1.W * vec[1] + Column2.W * vec[2] + Column3.W * vec[3];
-			return res;
+            return vec.FromArray (
+				Column0.X * vec[0] + Column1.X * vec[1] + Column2.X * vec[2] + Column3.X * vec[3], 
+				Column0.Y * vec[0] + Column1.Y * vec[1] + Column2.Y * vec[2] + Column3.Y * vec[3], 
+				Column0.Z * vec[0] + Column1.Z * vec[1] + Column2.Z * vec[2] + Column3.Z * vec[3], 
+				Column0.W * vec[0] + Column1.W * vec[1] + Column2.W * vec[2] + Column3.W * vec[3]);
         }
 
 		/// <summary>

@@ -35,9 +35,14 @@
 <#+		for (int i = 2; i <= 4; i++)
 			CopyConstructor (dim, type, suffix, i); #>
 		/// <summary>
-		/// Initialize vector from array.
+		/// Initialize vector from an array.
 		/// </summary>
 <#+		FromArray (dim, type, suffix); #>
+
+		/// <summary>
+		/// Copy vector components to an array.
+		/// </summary>
+<#+		ToArray (dim, type); #>
 
 		/// <summary>
 		/// Negate all of the components of the vector.
@@ -331,15 +336,6 @@ void BasicConstructor(int dim, string type, string suffix) { #>
 #>		}
 <#+ }
 
-void FromArray(int dim, string type, string suffix) { #>
-		public Vec<#= dim #><#= suffix #> FromArray (params <#= type #>[] components)
-		{	
-			return new Vec<#= dim #><#= suffix #> (<#+	
-			for (int i = 0; i < dim; i++) { #>components[<#= i #>]<#= i < dim - 1 ? ", " : ");" #><#+ } #>
-
-		}
-<#+ }
-
 void SingleValueConstructor(int dim, string type, string suffix) { #>
 		[GLConstructor ("<#= suffix #>vec<#= dim #> ({0})")]
 		[CLConstructor ("(<#= type #><#= dim #>) ({0})")]
@@ -377,6 +373,24 @@ void CopyConstructor(int dim, string type, string suffix, int otherDim) {
 #>		}
 
 <#+ } 
+
+void FromArray(int dim, string type, string suffix) { #>
+		public Vec<#= dim #><#= suffix #> FromArray (params <#= type #>[] components)
+		{	
+			return new Vec<#= dim #><#= suffix #> (<#+	
+			for (int i = 0; i < dim; i++) { #>components[<#= i #>]<#= i < dim - 1 ? ", " : ");" #><#+ } #>
+
+		}
+<#+ }
+
+void ToArray(int dim, string type) { #>
+		public <#= type #>[] ToArray ()
+		{	
+			return new <#= type #>[] { <#+	
+			for (int i = 0; i < dim; i++) { #><#= Component (i) + (i < dim - 1 ? ", " : " };") #><#+ } #>
+
+		}
+<#+ }
 
 void Indexer(int dim, string type) { #>
 

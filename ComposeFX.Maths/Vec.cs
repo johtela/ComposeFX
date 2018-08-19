@@ -32,7 +32,15 @@
 		where V : struct, IVec<V, T>
 		where T : struct, IEquatable<T>
 	{
+		/// <summary>
+		// Create vector from an array.
+		/// </summary>
 		V FromArray (params T[] components);
+
+		/// <summary>
+		/// Copy vector components to an array.
+		/// </summary>
+		T[] ToArray ();
 
 		/// <summary>
 		/// Negate all of the components of the vector.
@@ -132,21 +140,6 @@
             return default (V).FromArray (items);
         }
 
-		/// <summary>
-		/// Put the components of the vector to an array.
-		/// </summary>
-		/// This is the counteroperation of <see cref="FromArray{V, T}(T[])"/>. It takes a vector
-		/// and returns its components in an array.
-        public static T[] ToArray<V, T> (this V vec)
-            where V : struct, IVec<V, T>
-            where T : struct, IEquatable<T>
-        {
-            var res = new T[vec.Dimensions];
-            for (int i = 0; i < res.Length; i++)
-                res[i] = vec[i];
-            return res;
-        }
-
 		public static V New<V, T> (T value)
 			where V : struct, IVec<V, T>
 			where T : struct, IEquatable<T>
@@ -178,14 +171,14 @@
 			where U : struct, IVec<U, T>
 			where T : struct, IEquatable<T>
 		{
-			return FromArray<U, T> (vec.ToArray<V, T> ());
+			return FromArray<U, T> (vec.ToArray ());
 		}
 
 		public static U Convert<V, U> (this V vec)
 			where V : struct, IVec<V, int>
 			where U : struct, IVec<U, float>
 		{
-			return FromArray<U, float> (vec.ToArray<V, int> ().Map (x => (float)x));
+			return FromArray<U, float> (vec.ToArray ().Map (x => (float)x));
 		}
 
 		/// <summary>
@@ -199,7 +192,8 @@
 		public static bool ApproxEquals<V> (V vec, V other, float epsilon)
             where V : struct, IVec<V, float>
         {
-            for (int i = 0; i < vec.Dimensions; i++)
+			var dim = vec.Dimensions;
+            for (int i = 0; i < dim; i++)
 				if (!vec[i].ApproxEquals (other[i], epsilon)) 
 					return false;
             return true;
@@ -224,7 +218,7 @@
             where V : struct, IVec<V, T>
             where T : struct, IEquatable<T>
         {
-            var a = vec.ToArray<V, T> ();
+            var a = vec.ToArray ();
             a[i] = value;
             return vec.FromArray (a);
         }
@@ -235,8 +229,9 @@
 		public static float Sum<V> (this V vec)
 			where V : struct, IVec<V, float>
 		{
+			var dim = vec.Dimensions;
 			var res = vec [0];
-			for (int i = 1; i < vec.Dimensions; i++)
+			for (int i = 1; i < dim; i++)
 				res += vec [i];
 			return res;
 		}
@@ -247,8 +242,9 @@
 		public static int Sumi<V> (this V vec)
 			where V : struct, IVec<V, int>
 		{
+			var dim = vec.Dimensions;
 			var res = vec[0];
-			for (int i = 1; i < vec.Dimensions; i++)
+			for (int i = 1; i < dim; i++)
 				res += vec[i];
 			return res;
 		}
@@ -259,8 +255,9 @@
 		public static float Product<V> (this V vec)
 			where V : struct, IVec<V, float>
 		{
+			var dim = vec.Dimensions;
 			var res = vec[0];
-			for (int i = 1; i < vec.Dimensions; i++)
+			for (int i = 1; i < dim; i++)
 				res *= vec[i];
 			return res;
 		}
@@ -271,8 +268,9 @@
 		public static int Producti<V> (this V vec)
 			where V : struct, IVec<V, int>
 		{
+			var dim = vec.Dimensions;
 			var res = vec[0];
-			for (int i = 1; i < vec.Dimensions; i++)
+			for (int i = 1; i < dim; i++)
 				res *= vec[i];
 			return res;
 		}
@@ -318,10 +316,10 @@
 			where V : struct, IVec<V, T>
 			where T : struct, IEquatable<T>
 		{
-			var res = default (V);
-			for (int i = 0; i < vec.Dimensions; i++)
-				res[i] = map (vec[i]);
-			return res;
+			var arr = vec.ToArray ();
+			for (int i = 0; i < arr.Length; i++)
+				arr[i] = map (arr[i]);
+			return vec.FromArray (arr);
 		}
 
 		public static U Map<V, U, T, S> (this V vec, Func<T, S> map)
@@ -330,10 +328,12 @@
 			where T : struct, IEquatable<T>
 			where S : struct, IEquatable<S>
 		{
-			var res = default (U);
-			for (int i = 0; i < vec.Dimensions; i++)
-				res[i] = map (vec[i]);
-			return res;
+			var arr = vec.ToArray ();
+			var len = arr.Length;
+			var res = new S[len];
+			for (int i = 0; i < len; i++)
+				res[i] = map (arr[i]);
+			return default (U).FromArray (res);
 		}
 
 		/// <summary>
@@ -345,10 +345,10 @@
 			where V : struct, IVec<V, T>
 			where T : struct, IEquatable<T>
 		{
-			var res = default (V);
-			for (int i = 0; i < vec.Dimensions; i++)
-				res[i] = map (vec[i], other[i]);
-			return res;
+			var arr = vec.ToArray ();
+			for (int i = 0; i < arr.Length; i++)
+				arr[i] = map (arr[i], other[i]);
+			return vec.FromArray (arr);
 		}
 
 		/// <summary>
@@ -360,17 +360,18 @@
 			where V : struct, IVec<V, T>
 			where T : struct, IEquatable<T>
 		{
-			var res = default (V);
-			for (int i = 0; i < vec1.Dimensions; i++)
-				res[i] = map (vec1[i], vec2[i], vec3[i]);
-			return res;
+			var arr = vec1.ToArray ();
+			for (int i = 0; i < arr.Length; i++)
+				arr[i] = map (arr[i], vec2[i], vec3[i]);
+			return vec1.FromArray (arr);
 		}
 
 		public static bool All<V, T> (this V vec, Func<T, bool> predicate)
 			where V : struct, IVec<V, T>
 			where T : struct, IEquatable<T>
 		{
-			for (int i = 0; i < vec.Dimensions; i++)
+			var dim = vec.Dimensions;
+			for (int i = 0; i < dim; i++)
 				if (!predicate (vec[i]))
 					return false;
 			return true;
@@ -380,7 +381,8 @@
 			where V : struct, IVec<V, T>
 			where T : struct, IEquatable<T>
 		{
-			for (int i = 0; i < vec.Dimensions; i++)
+			var dim = vec.Dimensions;
+			for (int i = 0; i < dim; i++)
 				if (predicate (vec[i]))
 					return true;
 			return false;
@@ -856,7 +858,7 @@
 			return vec.Any<V, float> (float.IsNaN);
 		}
 
-		private static Random _random = new Random ();
+		private static readonly Random _random = new Random ();
 
 		public static V Random<V> (float rangeMin, float rangeMax)
 			where V : struct, IVec<V, float>

@@ -100,7 +100,15 @@
 			Column2 = new Vec3 (m20, m21, m22); 
 		}
 
- 		/// <summary>
+ 		public Mat3 FromArray (float[,] elems)
+		{
+			return new Mat3 (
+				elems[0, 0], elems[0, 1], elems[0, 2], 
+				elems[1, 0], elems[1, 1], elems[1, 2], 
+				elems[2, 0], elems[2, 1], elems[2, 2]);
+		}
+
+		/// <summary>
 		/// Number of columns in the matrix.
 		/// </summary>
 		public int Columns
@@ -187,11 +195,10 @@
             if (vec.Dimensions != Columns)
                 throw new ArgumentException (
 					string.Format ("Cannot multiply {0}x{1} matrix with {2}D vector", Columns, Rows, vec.Dimensions), "vec");
-            var res = default (V); 
-			res[0] = Column0.X * vec[0] + Column1.X * vec[1] + Column2.X * vec[2];
-			res[1] = Column0.Y * vec[0] + Column1.Y * vec[1] + Column2.Y * vec[2];
-			res[2] = Column0.Z * vec[0] + Column1.Z * vec[1] + Column2.Z * vec[2];
-			return res;
+            return vec.FromArray (
+				Column0.X * vec[0] + Column1.X * vec[1] + Column2.X * vec[2], 
+				Column0.Y * vec[0] + Column1.Y * vec[1] + Column2.Y * vec[2], 
+				Column0.Z * vec[0] + Column1.Z * vec[1] + Column2.Z * vec[2]);
         }
 
 		/// <summary>

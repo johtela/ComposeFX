@@ -28,6 +28,12 @@
 		where T : struct, IEquatable<T>
 	{
 		/// <summary>
+		/// Create matrix from a 2-dimensional array.
+		/// First dimension is columns second rows.
+		/// </summary>
+		M FromArray (T[,] elems);
+
+		/// <summary>
 		/// Add two matrices together elementwise.
 		/// </summary>
 		M Add (M mat);

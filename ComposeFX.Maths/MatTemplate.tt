@@ -48,6 +48,7 @@ namespace ComposeFX.Maths
 		/// </summary>
 		[GLConstructor ("<#= glType #> ({0})")]
 <#+		AllValuesConstructor (cols, rows, type, matType, vecType);
+		FromArray (cols, rows, type, matType, vecType);
 		Indexers (cols, rows, type, vecType); #>
 		/// <summary>
 		/// Add two matrices together componentwise.
@@ -80,13 +81,14 @@ namespace ComposeFX.Maths
             if (vec.Dimensions != Columns)
                 throw new ArgumentException (
 					string.Format ("Cannot multiply {0}x{1} matrix with {2}D vector", Columns, Rows, vec.Dimensions), "vec");
-            var res = default (V); 
-<#+			var i = 0;
-			foreach (var sum in VectorMultiply(cols, rows, (c, r) => string.Format("{0} * vec[{1}]", Component(c, r), c)))
+            return vec.FromArray (
+<#+			var comps = VectorMultiply(cols, rows, (c, r) => string.Format("{0} * vec[{1}]", Component(c, r), c)).ToArray ();
+			var len = comps.Length;
+			for (int i = 0; i < len; i++)
 			{
-#>			res[<#= i++ #>] = <#= sum #>;
+#>				<#= comps[i] + (i < (len - 1) ? ", " : ");") #>
 <#+			}
-#>			return res;
+#>
         }
 
 		/// <summary>
@@ -341,6 +343,9 @@ string ColumnValues (int col, int rows) {
 	return Delimiterize(Enumerable.Range(0, rows).Select(r => string.Format("m{0}{1}", col, r)), ", ");
 }
 
+string ArrayElems (int col, int rows) {
+	return Delimiterize(Enumerable.Range(0, rows).Select(r => string.Format("elems[{0}, {1}]", col, r)), ", ");
+}
 
 void SingleValueConstructor(int cols, int rows, string type, string matType, string vecType) { #>
 		public <#= matType #> (<#= type #> value)
@@ -378,7 +383,18 @@ void CopyConstructor(int cols, int rows, string type, string suffix, int otherCo
 #>		}
 
 <#+ }
- 
+
+void FromArray(int cols, int rows, string type, string matType, string vecType) { #>
+		public <#= matType #> FromArray (<#= type #>[,] elems)
+		{
+			return new <#= matType #> (
+<#+ for (int col = 0; col < cols; col++) { 
+#>				<#= ArrayElems (col, rows) + (col < (cols - 1) ? ", " : ");") #>
+<#+ } #>
+		}
+
+<#+ }
+
 void Indexers(int cols, int rows, string type, string vecType) { #>
 		/// <summary>
 		/// Number of columns in the matrix.
