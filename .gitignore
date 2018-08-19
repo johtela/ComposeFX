@@ -1,0 +1,8 @@
+*~
+*.swp
+bin
+obj
+*.userprefs
+*.suo
+*.user
+.vs
