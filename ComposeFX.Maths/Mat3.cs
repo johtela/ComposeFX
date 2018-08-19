@@ -100,7 +100,11 @@
 			Column2 = new Vec3 (m20, m21, m22); 
 		}
 
- 		public Mat3 FromArray (float[,] elems)
+ 		/// <summary>
+		/// Create matrix from a 2-dimensional array. The array is in column-major format.
+		/// First dimension refers to columns, second to rows.
+		/// </summary>
+		public Mat3 FromArray (float[,] elems)
 		{
 			return new Mat3 (
 				elems[0, 0], elems[0, 1], elems[0, 2], 

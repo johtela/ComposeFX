@@ -28,8 +28,8 @@
 		where T : struct, IEquatable<T>
 	{
 		/// <summary>
-		/// Create matrix from a 2-dimensional array.
-		/// First dimension is columns second rows.
+		/// Create matrix from a 2-dimensional array. The array is in column-major format.
+		/// First dimension refers to columns, second to rows.
 		/// </summary>
 		M FromArray (T[,] elems);
 

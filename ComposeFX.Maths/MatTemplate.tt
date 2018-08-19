@@ -385,6 +385,10 @@ void CopyConstructor(int cols, int rows, string type, string suffix, int otherCo
 <#+ }
 
 void FromArray(int cols, int rows, string type, string matType, string vecType) { #>
+		/// <summary>
+		/// Create matrix from a 2-dimensional array. The array is in column-major format.
+		/// First dimension refers to columns, second to rows.
+		/// </summary>
 		public <#= matType #> FromArray (<#= type #>[,] elems)
 		{
 			return new <#= matType #> (

@@ -111,7 +111,11 @@
 			Column3 = new Vec4 (m30, m31, m32, m33); 
 		}
 
- 		public Mat4 FromArray (float[,] elems)
+ 		/// <summary>
+		/// Create matrix from a 2-dimensional array. The array is in column-major format.
+		/// First dimension refers to columns, second to rows.
+		/// </summary>
+		public Mat4 FromArray (float[,] elems)
 		{
 			return new Mat4 (
 				elems[0, 0], elems[0, 1], elems[0, 2], elems[0, 3], 
