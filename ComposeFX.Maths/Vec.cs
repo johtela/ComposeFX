@@ -224,9 +224,9 @@
             where V : struct, IVec<V, T>
             where T : struct, IEquatable<T>
         {
-            var res = vec;
-            res[i] = value;
-            return res;
+            var a = vec.ToArray<V, T> ();
+            a[i] = value;
+            return vec.FromArray (a);
         }
 		
 		/// <summary>

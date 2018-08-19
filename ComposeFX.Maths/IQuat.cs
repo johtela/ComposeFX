@@ -11,7 +11,7 @@
 		Q Multiply (Q other);
 		Q FromAxisAngle (T x, T y, T z, T angle);
 		V ToVector<V> () where V : struct, IVec<V, T>;
-		M ToMatrix<M> () where M : struct, ISquareMat<M, T>;
+		Mat3 ToMatrix ();
 		V RotateVec<V> (V vec) where V : struct, IVec<V, T>;
 		Q Lerp (Q other, T interPos);
 		Q Slerp (Q other, T interPos);
