@@ -36,12 +36,12 @@
 		/// <summary>
 		/// Add two matrices together elementwise.
 		/// </summary>
-		M Add (M mat);
+		M Add (in M mat);
 
 		/// <summary>
 		/// Subtract a matrix from this one elementwise.
 		/// </summary>
-		M Subtract (M mat);
+		M Subtract (in M mat);
 
 		/// <summary>
 		/// Multiply the matrix elements by a scalar.
@@ -54,7 +54,7 @@
 		/// If this is not the case the implementation should throw an
 		/// ArgumentException.
 		/// </summary>
-		V Multiply<V> (V vec) where V : struct, IVec<V, T>, IEquatable<V>;
+		V Multiply<V> (in V vec) where V : struct, IVec<V, T>, IEquatable<V>;
 
 		/// <summary>
 		/// Divide the elements of the matrix by a scalar.
@@ -89,7 +89,7 @@
 	/// <typeparam name="M">The type of the matrix struct implementing this interface.</typeparam>
 	/// <typeparam name="T">The type of the matrix elements.</typeparam>
 	public interface ISquareMat<M, T> : IMat<M, T>
-		where M : struct, ISquareMat<M, T>, IEquatable<M>
+		where M : struct, ISquareMat<M, T>
 		where T : struct, IEquatable<T>
 	{
 		/// <summary>
@@ -97,7 +97,7 @@
 		/// transformations that the matrices represent. It is the most common operation
 		/// performed on matrices. <see href="https://en.wikipedia.org/wiki/Matrix_multiplication"/>
 		/// </summary>
-		M Multiply (M mat);
+		M Multiply (in M mat);
 
 		/// <summary>
 		/// Return the transposed matrix with rows and columns swapped.
@@ -401,19 +401,11 @@
 		public static V Transform<V> (this Mat4 mat, V point)
 			where V : struct, IVec<V, float>
 		{
-			Vec4 vec = new Vec4 ();
-			switch (point)
-			{
-				case Vec2 v:
-					vec = new Vec4 (v, 1f, 1f);
-					break;
-				case Vec3 v:
-					vec = new Vec4 (v, 1f);
-					break;
-				case Vec4 v:
-					vec = v;
-					break;
-			}
+			var arr = new float[4];
+			var dim = point.Dimensions;
+			for (int i = 0; i < 4; i++)
+				arr[i] = i < dim ? point[i] : 1f;
+			var vec = new Vec4 (arr[0], arr[1], arr[2], arr[3]);
 			var res = mat * vec;
 			return point.FromArray (res.X, res.Y, res.Z, res.W);
         }

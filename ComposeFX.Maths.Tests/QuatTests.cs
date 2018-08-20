@@ -1,6 +1,6 @@
-﻿namespace ComposeTester
+﻿namespace ComposeFX.Maths.Tests
 {
-    using System;
+	using System;
     using System.Linq;
     using ComposeFX.Maths;
 	using Microsoft.VisualStudio.TestTools.UnitTesting;

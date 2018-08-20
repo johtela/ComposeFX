@@ -36,7 +36,7 @@
 		/// elements are initialized to zero.
 		/// </summary>
 		[GLConstructor ("mat2 ({0})")]
-		public Mat2 (Mat2 mat)
+		public Mat2 (in Mat2 mat)
 		{	
 			Column0 = new Vec2 (mat.Column0);
 			Column1 = new Vec2 (mat.Column1);
@@ -48,7 +48,7 @@
 		/// elements are initialized to zero.
 		/// </summary>
 		[GLConstructor ("mat2 ({0})")]
-		public Mat2 (Mat3 mat)
+		public Mat2 (in Mat3 mat)
 		{	
 			Column0 = new Vec2 (mat.Column0);
 			Column1 = new Vec2 (mat.Column1);
@@ -60,7 +60,7 @@
 		/// elements are initialized to zero.
 		/// </summary>
 		[GLConstructor ("mat2 ({0})")]
-		public Mat2 (Mat4 mat)
+		public Mat2 (in Mat4 mat)
 		{	
 			Column0 = new Vec2 (mat.Column0);
 			Column1 = new Vec2 (mat.Column1);
@@ -144,7 +144,7 @@
 		/// Add two matrices together componentwise.
 		/// </summary>
 		[GLBinaryOperator ("{0} + {1}")]
-		public Mat2 Add (Mat2 other)
+		public Mat2 Add (in Mat2 other)
 		{
 			return new Mat2 (Column0 + other.Column0, Column1 + other.Column1);
 		}
@@ -153,7 +153,7 @@
 		/// Componentwise subtraction of two matrices.
 		/// </summary>
 		[GLBinaryOperator ("{0} - {1}")]
-		public Mat2 Subtract (Mat2 other)
+		public Mat2 Subtract (in Mat2 other)
 		{
 			return new Mat2 (Column0 - other.Column0, Column1 - other.Column1);
 		}
@@ -181,7 +181,7 @@
 		/// matrix has columns. The result is a vector with same dimensions as the
 		/// vector given as argument.
 		/// </summary>
-        public V Multiply<V> (V vec) where V : struct, IVec<V, float>, IEquatable<V>
+        public V Multiply<V> (in V vec) where V : struct, IVec<V, float>, IEquatable<V>
         {
             if (vec.Dimensions != Columns)
                 throw new ArgumentException (
@@ -203,7 +203,7 @@
 		/// The multiplication of two matrices.
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
-        public Mat2 Multiply (Mat2 mat)
+        public Mat2 Multiply (in Mat2 mat)
         {
             return this * mat;
         }
@@ -272,16 +272,16 @@
 		/// Componentwise subtraction of two matrices.
 		/// </summary>
 		[GLBinaryOperator ("{0} - {1}")]
-		public static Mat2 operator - (Mat2 left, Mat2 right)
+		public static Mat2 operator - (in Mat2 left, in Mat2 right)
         {
-            return left.Subtract (right);
+            return left.Subtract (in right);
         }
 
 		/// <summary>
 		/// Multiply a matrix with a scalar componentwise.
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
-        public static Mat2 operator * (float scalar, Mat2 mat)
+        public static Mat2 operator * (in float scalar, in Mat2 mat)
         {
             return mat.Multiply (scalar);
         }
@@ -290,7 +290,7 @@
 		/// Multiply a matrix with a scalar componentwise.
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
-        public static Mat2 operator * (Mat2 mat, float scalar)
+        public static Mat2 operator * (in Mat2 mat, float scalar)
         {
             return mat.Multiply (scalar);
         }
@@ -299,7 +299,7 @@
 		/// Multiply two matrices together using the matrix product operation.
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
-        public static Mat2 operator * (Mat2 left, Mat2 right)
+        public static Mat2 operator * (in Mat2 left, in Mat2 right)
         {
 			return new Mat2 (
 				left.Column0.X * right.Column0.X + left.Column1.X * right.Column0.Y,
@@ -312,7 +312,7 @@
 		/// Multiply a matrix by a Vec2 producing a vector with the same type.
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
-        public static Vec2 operator * (Mat2 mat, Vec2 vec)
+        public static Vec2 operator * (in Mat2 mat, in Vec2 vec)
         {
 			return new Vec2 (
 				mat.Column0.X * vec.X + mat.Column1.X * vec.Y,
@@ -323,7 +323,7 @@
 		/// Divide a matrix by a scalar componentwise.
 		/// </summary>
 		[GLBinaryOperator ("{0} / {1}")]
-        public static Mat2 operator / (Mat2 mat, float scalar)
+        public static Mat2 operator / (in Mat2 mat, float scalar)
         {
             return mat.Divide (scalar);
         }
@@ -332,15 +332,15 @@
 		/// Add two matrices together componentwise.
 		/// </summary>
 		[GLBinaryOperator ("{0} + {1}")]
-        public static Mat2 operator + (Mat2 left, Mat2 right)
+        public static Mat2 operator + (in Mat2 left, in Mat2 right)
         {
-            return left.Add (right);
+            return left.Add (in right);
         }
 
 		/// <summary>
 		/// Overloaded equality operator that works with matrices.
 		/// </summary>
-        public static bool operator == (Mat2 left, Mat2 right)
+        public static bool operator == (in Mat2 left, in Mat2 right)
         {
             return left.Equals (right);
         }
@@ -348,7 +348,7 @@
 		/// <summary>
 		/// Overloaded inequality operator that works with matrices.
 		/// </summary>
-        public static bool operator != (Mat2 left, Mat2 right)
+        public static bool operator != (in Mat2 left, in Mat2 right)
         {
             return !left.Equals (right);
         }

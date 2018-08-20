@@ -72,7 +72,7 @@
 		/// </summary>
 		[GLConstructor ("ivec4 ({0})")]
 		[CLConstructor ("(int4) ({0})")]
-		public Vec4i (Vec2i vec, int z, int w)
+		public Vec4i (in Vec2i vec, int z, int w)
 		{	
 			X = vec.X; 
 			Y = vec.Y; 
@@ -85,7 +85,7 @@
 		/// </summary>
 		[GLConstructor ("ivec4 ({0})")]
 		[CLConstructor ("(int4) ({0})")]
-		public Vec4i (Vec3i vec, int w)
+		public Vec4i (in Vec3i vec, int w)
 		{	
 			X = vec.X; 
 			Y = vec.Y; 
@@ -98,7 +98,7 @@
 		/// </summary>
 		[GLConstructor ("ivec4 ({0})")]
 		[CLConstructor ("(int4) ({0})")]
-		public Vec4i (Vec4i vec)
+		public Vec4i (in Vec4i vec)
 		{	
 			X = vec.X; 
 			Y = vec.Y; 
@@ -137,7 +137,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} + {1}")]
 		[CLBinaryOperator ("{0} + {1}")]
-		public Vec4i Add (Vec4i other)
+		public Vec4i Add (in Vec4i other)
 		{
 			return new Vec4i (X + other.X, Y + other.Y, Z + other.Z, W + other.W);
 		}
@@ -147,7 +147,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} - {1}")]
 		[CLBinaryOperator ("{0} - {1}")]
-		public Vec4i Subtract (Vec4i other)
+		public Vec4i Subtract (in Vec4i other)
 		{
 			return new Vec4i (X - other.X, Y - other.Y, Z - other.Z, W - other.W);
 		}
@@ -157,7 +157,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
 		[CLBinaryOperator ("{0} * {1}")]
-		public Vec4i Multiply (Vec4i other)
+		public Vec4i Multiply (in Vec4i other)
 		{
 			return new Vec4i (X * other.X, Y * other.Y, Z * other.Z, W * other.W);
 		}
@@ -177,7 +177,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} / {1}")]
 		[CLBinaryOperator ("{0} / {1}")]
-		public Vec4i Divide (Vec4i other)
+		public Vec4i Divide (in Vec4i other)
 		{
 			return new Vec4i (X / other.X, Y / other.Y, Z / other.Z, W / other.W);
 		}
@@ -197,7 +197,7 @@
 		/// </summary>
 		[GLFunction ("dot ({0})")]
 		[CLFunction ("dot ({0})")]
-		public int Dot (Vec4i other)
+		public int Dot (in Vec4i other)
 		{
 			return X * other.X + Y * other.Y + Z * other.Z + W * other.W;
 		}
@@ -325,7 +325,7 @@
 		/// </summary>
 		[GLUnaryOperator ("-{0}")]
 		[CLUnaryOperator ("-{0}")]
-        public static Vec4i operator - (Vec4i vec)
+        public static Vec4i operator - (in Vec4i vec)
         {
             return vec.Invert ();
         }
@@ -335,9 +335,9 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} - {1}")]
 		[CLBinaryOperator ("{0} - {1}")]
-        public static Vec4i operator - (Vec4i left, Vec4i right)
+        public static Vec4i operator - (in Vec4i left, in Vec4i right)
         {
-            return left.Subtract (right);
+            return left.Subtract (in right);
         }
 
 		/// <summary>
@@ -345,7 +345,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
 		[CLBinaryOperator ("{0} * {1}")]
-        public static Vec4i operator * (int scalar, Vec4i vec)
+        public static Vec4i operator * (int scalar, in Vec4i vec)
         {
             return vec.Multiply (scalar);
         }
@@ -355,7 +355,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
 		[CLBinaryOperator ("{0} * {1}")]
-        public static Vec4i operator * (Vec4i vec, int scalar)
+        public static Vec4i operator * (in Vec4i vec, int scalar)
         {
             return vec.Multiply (scalar);
         }
@@ -365,9 +365,9 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
 		[CLBinaryOperator ("{0} * {1}")]
-        public static Vec4i operator * (Vec4i vec, Vec4i scale)
+        public static Vec4i operator * (in Vec4i vec, in Vec4i scale)
         {
-            return vec.Multiply (scale);
+            return vec.Multiply (in scale);
         }
 
 		/// <summary>
@@ -375,7 +375,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} / {1}")]
 		[CLBinaryOperator ("{0} / {1}")]
-        public static Vec4i operator / (Vec4i vec, int scalar)
+        public static Vec4i operator / (in Vec4i vec, int scalar)
         {
             return vec.Divide (scalar);
         }
@@ -385,7 +385,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} / {1}")]
 		[CLBinaryOperator ("{0} / {1}")]
-        public static Vec4i operator / (Vec4i vec, Vec4i scale)
+        public static Vec4i operator / (in Vec4i vec, in Vec4i scale)
         {
             return vec.Divide (scale);
         }
@@ -395,7 +395,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} / {1}")]
 		[CLBinaryOperator ("{0} / {1}")]
-        public static Vec4i operator / (int scalar, Vec4i vec)
+        public static Vec4i operator / (int scalar, in Vec4i vec)
         {
             return new Vec4i (scalar).Divide (vec);
         }
@@ -405,7 +405,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} + {1}")]
 		[CLBinaryOperator ("{0} + {1}")]
-        public static Vec4i operator + (Vec4i left, Vec4i right)
+        public static Vec4i operator + (in Vec4i left, in Vec4i right)
         {
             return left.Add (right);
         }
@@ -415,7 +415,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} == {1}")]
 		[CLBinaryOperator ("{0} == {1}")]
-        public static bool operator == (Vec4i left, Vec4i right)
+        public static bool operator == (in Vec4i left, in Vec4i right)
         {
             return left.Equals (right);
         }
@@ -425,7 +425,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} != {1}")]
 		[CLBinaryOperator ("{0} != {1}")]
-        public static bool operator != (Vec4i left, Vec4i right)
+        public static bool operator != (in Vec4i left, in Vec4i right)
         {
             return !left.Equals (right);
         }

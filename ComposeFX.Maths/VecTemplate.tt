@@ -172,7 +172,7 @@
 		/// </summary>
 		[GLUnaryOperator ("-{0}")]
 		[CLUnaryOperator ("-{0}")]
-        public static <#= vecType #> operator - (<#= vecType #> vec)
+        public static <#= vecType #> operator - (in <#= vecType #> vec)
         {
             return vec.Invert ();
         }
@@ -182,9 +182,9 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} - {1}")]
 		[CLBinaryOperator ("{0} - {1}")]
-        public static <#= vecType #> operator - (<#= vecType #> left, <#= vecType #> right)
+        public static <#= vecType #> operator - (in <#= vecType #> left, in <#= vecType #> right)
         {
-            return left.Subtract (right);
+            return left.Subtract (in right);
         }
 
 		/// <summary>
@@ -192,7 +192,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
 		[CLBinaryOperator ("{0} * {1}")]
-        public static <#= vecType #> operator * (<#= type #> scalar, <#= vecType #> vec)
+        public static <#= vecType #> operator * (<#= type #> scalar, in <#= vecType #> vec)
         {
             return vec.Multiply (scalar);
         }
@@ -202,7 +202,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
 		[CLBinaryOperator ("{0} * {1}")]
-        public static <#= vecType #> operator * (<#= vecType #> vec, <#= type #> scalar)
+        public static <#= vecType #> operator * (in <#= vecType #> vec, <#= type #> scalar)
         {
             return vec.Multiply (scalar);
         }
@@ -212,9 +212,9 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
 		[CLBinaryOperator ("{0} * {1}")]
-        public static <#= vecType #> operator * (<#= vecType #> vec, <#= vecType #> scale)
+        public static <#= vecType #> operator * (in <#= vecType #> vec, in <#= vecType #> scale)
         {
-            return vec.Multiply (scale);
+            return vec.Multiply (in scale);
         }
 
 		/// <summary>
@@ -222,7 +222,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} / {1}")]
 		[CLBinaryOperator ("{0} / {1}")]
-        public static <#= vecType #> operator / (<#= vecType #> vec, <#= type #> scalar)
+        public static <#= vecType #> operator / (in <#= vecType #> vec, <#= type #> scalar)
         {
             return vec.Divide (scalar);
         }
@@ -232,7 +232,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} / {1}")]
 		[CLBinaryOperator ("{0} / {1}")]
-        public static <#= vecType #> operator / (<#= vecType #> vec, <#= vecType #> scale)
+        public static <#= vecType #> operator / (in <#= vecType #> vec, in <#= vecType #> scale)
         {
             return vec.Divide (scale);
         }
@@ -242,7 +242,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} / {1}")]
 		[CLBinaryOperator ("{0} / {1}")]
-        public static <#= vecType #> operator / (<#= type #> scalar, <#= vecType #> vec)
+        public static <#= vecType #> operator / (<#= type #> scalar, in <#= vecType #> vec)
         {
             return new <#= vecType #> (scalar).Divide (vec);
         }
@@ -252,7 +252,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} + {1}")]
 		[CLBinaryOperator ("{0} + {1}")]
-        public static <#= vecType #> operator + (<#= vecType #> left, <#= vecType #> right)
+        public static <#= vecType #> operator + (in <#= vecType #> left, in <#= vecType #> right)
         {
             return left.Add (right);
         }
@@ -262,7 +262,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} == {1}")]
 		[CLBinaryOperator ("{0} == {1}")]
-        public static bool operator == (<#= vecType #> left, <#= vecType #> right)
+        public static bool operator == (in <#= vecType #> left, in <#= vecType #> right)
         {
             return left.Equals (right);
         }
@@ -272,7 +272,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} != {1}")]
 		[CLBinaryOperator ("{0} != {1}")]
-        public static bool operator != (<#= vecType #> left, <#= vecType #> right)
+        public static bool operator != (in <#= vecType #> left, in <#= vecType #> right)
         {
             return !left.Equals (right);
         }
@@ -352,7 +352,7 @@ void CopyConstructor(int dim, string type, string suffix, int otherDim) {
 		/// </summary>
 		[GLConstructor ("<#= suffix #>vec<#= dim #> ({0})")]
 		[CLConstructor ("(<#= type #><#= dim #>) ({0})")]
-		public Vec<#= dim #><#= suffix #> (Vec<#= otherDim #><#= suffix #> vec, <#= PartialArgumentList(otherDim, dim, type) #>)
+		public Vec<#= dim #><#= suffix #> (in Vec<#= otherDim #><#= suffix #> vec, <#= PartialArgumentList(otherDim, dim, type) #>)
 		{	
 <#+ }
 	else { #>
@@ -361,7 +361,7 @@ void CopyConstructor(int dim, string type, string suffix, int otherDim) {
 		/// </summary>
 		[GLConstructor ("<#= suffix #>vec<#= dim #> ({0})")]
 		[CLConstructor ("(<#= type #><#= dim #>) ({0})")]
-		public Vec<#= dim #><#= suffix #> (Vec<#= otherDim #><#= suffix #> vec)
+		public Vec<#= dim #><#= suffix #> (in Vec<#= otherDim #><#= suffix #> vec)
 		{	
 <#+ 
     }
@@ -441,14 +441,14 @@ void Unary(int dim, string vecType, string name, string oper, string delim) {
 <#+ } 
 
 void Binary(int dim, string vecType, string name, string oper, string delim) { 
-#>		public <#= vecType #> <#= name #> (<#= vecType #> other)
+#>		public <#= vecType #> <#= name #> (in <#= vecType #> other)
 		{
 			return new <#= vecType #> (<#= ComponentList(dim, delim, comp => string.Format("{0} {1} other.{0}", comp, oper)) #>);
 		}
 <#+ } 
 
 void BinaryFunc(int dim, string vecType, string name, string func, string delim) { 
-#>		public <#= vecType #> <#= name #> (<#= vecType #> other)
+#>		public <#= vecType #> <#= name #> (in <#= vecType #> other)
 		{
 			return new <#= vecType #> (<#= ComponentList(dim, delim, comp => string.Format("{0} ({1}, other.{1})", func, comp)) #>);
 		}
@@ -462,7 +462,7 @@ void Scalar(int dim, string vecType, string scalarType, string name, string oper
 <#+ } 
 
 void BinaryScalar(int dim, string vecType, string scalarType, string name, string oper, string delim) { 
-#>		public <#= scalarType #> <#= name #> (<#= vecType #> other)
+#>		public <#= scalarType #> <#= name #> (<#= name != "Equals" ? "in " : ""#><#= vecType #> other)
 		{
 			return <#= ComponentList(dim, delim, comp => string.Format("{0} {1} other.{0}", comp, oper)) #>;
 		}

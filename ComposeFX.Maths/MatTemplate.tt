@@ -76,7 +76,7 @@ namespace ComposeFX.Maths
 		/// matrix has columns. The result is a vector with same dimensions as the
 		/// vector given as argument.
 		/// </summary>
-        public V Multiply<V> (V vec) where V : struct, IVec<V, float>, IEquatable<V>
+        public V Multiply<V> (in V vec) where V : struct, IVec<V, float>, IEquatable<V>
         {
             if (vec.Dimensions != Columns)
                 throw new ArgumentException (
@@ -100,7 +100,7 @@ namespace ComposeFX.Maths
 		/// The multiplication of two matrices.
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
-        public <#= matType #> Multiply (<#= matType #> mat)
+        public <#= matType #> Multiply (in <#= matType #> mat)
         {
             return this * mat;
         }
@@ -170,16 +170,16 @@ namespace ComposeFX.Maths
 		/// Componentwise subtraction of two matrices.
 		/// </summary>
 		[GLBinaryOperator ("{0} - {1}")]
-		public static <#= matType #> operator - (<#= matType #> left, <#= matType #> right)
+		public static <#= matType #> operator - (in <#= matType #> left, in <#= matType #> right)
         {
-            return left.Subtract (right);
+            return left.Subtract (in right);
         }
 
 		/// <summary>
 		/// Multiply a matrix with a scalar componentwise.
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
-        public static <#= matType #> operator * (<#= type #> scalar, <#= matType #> mat)
+        public static <#= matType #> operator * (in <#= type #> scalar, in <#= matType #> mat)
         {
             return mat.Multiply (scalar);
         }
@@ -188,7 +188,7 @@ namespace ComposeFX.Maths
 		/// Multiply a matrix with a scalar componentwise.
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
-        public static <#= matType #> operator * (<#= matType #> mat, <#= type #> scalar)
+        public static <#= matType #> operator * (in <#= matType #> mat, <#= type #> scalar)
         {
             return mat.Multiply (scalar);
         }
@@ -197,7 +197,7 @@ namespace ComposeFX.Maths
 		/// Multiply two matrices together using the matrix product operation.
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
-        public static <#= matType #> operator * (<#= matType #> left, <#= matType #> right)
+        public static <#= matType #> operator * (in <#= matType #> left, in <#= matType #> right)
         {
 			return new <#= matType #> (
 				<#= Delimiterize(MatrixMultiply(cols, rows, 
@@ -208,7 +208,7 @@ namespace ComposeFX.Maths
 		/// Multiply a matrix by a <#= vecType #> producing a vector with the same type.
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
-        public static <#= vecType #> operator * (<#= matType #> mat, <#= vecType #> vec)
+        public static <#= vecType #> operator * (in <#= matType #> mat, in <#= vecType #> vec)
         {
 			return new <#= vecType #> (
 				<#= Delimiterize(VectorMultiply(cols, rows, 
@@ -219,7 +219,7 @@ namespace ComposeFX.Maths
 		/// Divide a matrix by a scalar componentwise.
 		/// </summary>
 		[GLBinaryOperator ("{0} / {1}")]
-        public static <#= matType #> operator / (<#= matType #> mat, <#= type #> scalar)
+        public static <#= matType #> operator / (in <#= matType #> mat, <#= type #> scalar)
         {
             return mat.Divide (scalar);
         }
@@ -228,15 +228,15 @@ namespace ComposeFX.Maths
 		/// Add two matrices together componentwise.
 		/// </summary>
 		[GLBinaryOperator ("{0} + {1}")]
-        public static <#= matType #> operator + (<#= matType #> left, <#= matType #> right)
+        public static <#= matType #> operator + (in <#= matType #> left, in <#= matType #> right)
         {
-            return left.Add (right);
+            return left.Add (in right);
         }
 
 		/// <summary>
 		/// Overloaded equality operator that works with matrices.
 		/// </summary>
-        public static bool operator == (<#= matType #> left, <#= matType #> right)
+        public static bool operator == (in <#= matType #> left, in <#= matType #> right)
         {
             return left.Equals (right);
         }
@@ -244,7 +244,7 @@ namespace ComposeFX.Maths
 		/// <summary>
 		/// Overloaded inequality operator that works with matrices.
 		/// </summary>
-        public static bool operator != (<#= matType #> left, <#= matType #> right)
+        public static bool operator != (in <#= matType #> left, in <#= matType #> right)
         {
             return !left.Equals (right);
         }
@@ -369,7 +369,7 @@ void AllValuesConstructor(int cols, int rows, string type, string matType, strin
  <#+ }
 
 void CopyConstructor(int cols, int rows, string type, string suffix, int otherCols, int otherRows) { #>
-		public <#= MatType(cols, rows, type, suffix) #> (<#= MatType(otherCols, otherRows, type, suffix) #> mat)
+		public <#= MatType(cols, rows, type, suffix) #> (in <#= MatType(otherCols, otherRows, type, suffix) #> mat)
 		{	
 <#+	for (int c = 0; c < cols; c++) {
 		if (c < otherCols) {
@@ -443,7 +443,7 @@ void Indexers(int cols, int rows, string type, string vecType) { #>
 <#+ } 
 
 void Binary(int cols, string matType, string name, string oper, string delim) { #>
-		public <#= matType #> <#= name #> (<#= matType #> other)
+		public <#= matType #> <#= name #> (in <#= matType #> other)
 		{
 			return new <#= matType #> (<#= ColumnList(cols, delim, col => string.Format("{0} {1} other.{0}", col, oper)) #>);
 		}
@@ -459,7 +459,7 @@ void Scalar(int cols, string matType, string scalarType, string name, string ope
 <#+ } 
 
 void BinaryScalar(int cols, string matType, string scalarType, string name, string oper, string delim) { #>
-		public <#= scalarType #> <#= name #> (<#= matType #> other)
+		public <#= scalarType #> <#= name #> (<#= name != "Equals" ? "in " : ""#><#= matType #> other)
 		{
 			return <#= ColumnList(cols, delim, col => string.Format("{0} {1} other.{0}", col, oper)) #>;
 		}

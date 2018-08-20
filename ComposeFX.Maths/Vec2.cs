@@ -54,7 +54,7 @@
 		/// </summary>
 		[GLConstructor ("vec2 ({0})")]
 		[CLConstructor ("(float2) ({0})")]
-		public Vec2 (Vec2 vec)
+		public Vec2 (in Vec2 vec)
 		{	
 			X = vec.X; 
 			Y = vec.Y; 
@@ -65,7 +65,7 @@
 		/// </summary>
 		[GLConstructor ("vec2 ({0})")]
 		[CLConstructor ("(float2) ({0})")]
-		public Vec2 (Vec3 vec)
+		public Vec2 (in Vec3 vec)
 		{	
 			X = vec.X; 
 			Y = vec.Y; 
@@ -76,7 +76,7 @@
 		/// </summary>
 		[GLConstructor ("vec2 ({0})")]
 		[CLConstructor ("(float2) ({0})")]
-		public Vec2 (Vec4 vec)
+		public Vec2 (in Vec4 vec)
 		{	
 			X = vec.X; 
 			Y = vec.Y; 
@@ -113,7 +113,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} + {1}")]
 		[CLBinaryOperator ("{0} + {1}")]
-		public Vec2 Add (Vec2 other)
+		public Vec2 Add (in Vec2 other)
 		{
 			return new Vec2 (X + other.X, Y + other.Y);
 		}
@@ -123,7 +123,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} - {1}")]
 		[CLBinaryOperator ("{0} - {1}")]
-		public Vec2 Subtract (Vec2 other)
+		public Vec2 Subtract (in Vec2 other)
 		{
 			return new Vec2 (X - other.X, Y - other.Y);
 		}
@@ -133,7 +133,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
 		[CLBinaryOperator ("{0} * {1}")]
-		public Vec2 Multiply (Vec2 other)
+		public Vec2 Multiply (in Vec2 other)
 		{
 			return new Vec2 (X * other.X, Y * other.Y);
 		}
@@ -153,7 +153,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} / {1}")]
 		[CLBinaryOperator ("{0} / {1}")]
-		public Vec2 Divide (Vec2 other)
+		public Vec2 Divide (in Vec2 other)
 		{
 			return new Vec2 (X / other.X, Y / other.Y);
 		}
@@ -173,7 +173,7 @@
 		/// </summary>
 		[GLFunction ("dot ({0})")]
 		[CLFunction ("dot ({0})")]
-		public float Dot (Vec2 other)
+		public float Dot (in Vec2 other)
 		{
 			return X * other.X + Y * other.Y;
 		}
@@ -281,7 +281,7 @@
 		/// </summary>
 		[GLUnaryOperator ("-{0}")]
 		[CLUnaryOperator ("-{0}")]
-        public static Vec2 operator - (Vec2 vec)
+        public static Vec2 operator - (in Vec2 vec)
         {
             return vec.Invert ();
         }
@@ -291,9 +291,9 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} - {1}")]
 		[CLBinaryOperator ("{0} - {1}")]
-        public static Vec2 operator - (Vec2 left, Vec2 right)
+        public static Vec2 operator - (in Vec2 left, in Vec2 right)
         {
-            return left.Subtract (right);
+            return left.Subtract (in right);
         }
 
 		/// <summary>
@@ -301,7 +301,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
 		[CLBinaryOperator ("{0} * {1}")]
-        public static Vec2 operator * (float scalar, Vec2 vec)
+        public static Vec2 operator * (float scalar, in Vec2 vec)
         {
             return vec.Multiply (scalar);
         }
@@ -311,7 +311,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
 		[CLBinaryOperator ("{0} * {1}")]
-        public static Vec2 operator * (Vec2 vec, float scalar)
+        public static Vec2 operator * (in Vec2 vec, float scalar)
         {
             return vec.Multiply (scalar);
         }
@@ -321,9 +321,9 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} * {1}")]
 		[CLBinaryOperator ("{0} * {1}")]
-        public static Vec2 operator * (Vec2 vec, Vec2 scale)
+        public static Vec2 operator * (in Vec2 vec, in Vec2 scale)
         {
-            return vec.Multiply (scale);
+            return vec.Multiply (in scale);
         }
 
 		/// <summary>
@@ -331,7 +331,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} / {1}")]
 		[CLBinaryOperator ("{0} / {1}")]
-        public static Vec2 operator / (Vec2 vec, float scalar)
+        public static Vec2 operator / (in Vec2 vec, float scalar)
         {
             return vec.Divide (scalar);
         }
@@ -341,7 +341,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} / {1}")]
 		[CLBinaryOperator ("{0} / {1}")]
-        public static Vec2 operator / (Vec2 vec, Vec2 scale)
+        public static Vec2 operator / (in Vec2 vec, in Vec2 scale)
         {
             return vec.Divide (scale);
         }
@@ -351,7 +351,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} / {1}")]
 		[CLBinaryOperator ("{0} / {1}")]
-        public static Vec2 operator / (float scalar, Vec2 vec)
+        public static Vec2 operator / (float scalar, in Vec2 vec)
         {
             return new Vec2 (scalar).Divide (vec);
         }
@@ -361,7 +361,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} + {1}")]
 		[CLBinaryOperator ("{0} + {1}")]
-        public static Vec2 operator + (Vec2 left, Vec2 right)
+        public static Vec2 operator + (in Vec2 left, in Vec2 right)
         {
             return left.Add (right);
         }
@@ -371,7 +371,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} == {1}")]
 		[CLBinaryOperator ("{0} == {1}")]
-        public static bool operator == (Vec2 left, Vec2 right)
+        public static bool operator == (in Vec2 left, in Vec2 right)
         {
             return left.Equals (right);
         }
@@ -381,7 +381,7 @@
 		/// </summary>
 		[GLBinaryOperator ("{0} != {1}")]
 		[CLBinaryOperator ("{0} != {1}")]
-        public static bool operator != (Vec2 left, Vec2 right)
+        public static bool operator != (in Vec2 left, in Vec2 right)
         {
             return !left.Equals (right);
         }

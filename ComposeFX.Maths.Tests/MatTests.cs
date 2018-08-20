@@ -1,4 +1,4 @@
-﻿namespace ComposeTester
+﻿namespace ComposeFX.Maths.Tests
 {
 	using System;
 	using System.Linq;

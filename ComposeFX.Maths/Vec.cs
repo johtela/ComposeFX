@@ -50,12 +50,12 @@
 		/// <summary>
 		/// Add another vector this one componentwise.
 		/// </summary>
-		V Add (V other);
+		V Add (in V other);
 
 		/// <summary>
 		/// Subtract the given vector from this one componentwise.
 		/// </summary>
-		V Subtract (V other);
+		V Subtract (in V other);
 
 		/// <summary>
 		/// Multiply the components of this vector with a same scalar value.
@@ -65,7 +65,7 @@
 		/// <summary>
 		/// Multiply with another vector componentwise.
 		/// </summary>
-		V Multiply (V scale);
+		V Multiply (in V scale);
 
 		/// <summary>
 		/// Divide the components of this vector by a same scalar value.
@@ -75,12 +75,12 @@
 		/// <summary>
 		/// Divide by another vector componentwise.
 		/// </summary>
-		V Divide (V scale);
+		V Divide (in V scale);
 
 		/// <summary>
 		/// Calculate the dot product with another vector.
 		/// </summary>
-		T Dot (V other);
+		T Dot (in V other);
 
 		/// <summary>
 		/// Number of dimensions/components in the vector.
