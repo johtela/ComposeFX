@@ -10,7 +10,7 @@
         private readonly Vec3 _invDir;
         private readonly Vec3i _dirSign;
 
-        public Ray (Vec3 origin, Vec3 direction)
+        public Ray (in Vec3 origin, in Vec3 direction)
         {
             Origin = origin;
             Direction = direction;

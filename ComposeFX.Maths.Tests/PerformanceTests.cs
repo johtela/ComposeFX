@@ -8,8 +8,8 @@
 	[TestClass]
 	public class PerformanceTests
     {
-        //[TestMethod]
-        public void TestMatrix ()
+		[TestMethod]
+		public void TestMatrix ()
         {
             var mat1 = Matrix4.CreateRotationX (30);
             var mat2 = Matrix4.CreateRotationY (40);
@@ -24,8 +24,8 @@
 			Console.WriteLine (res);
         }
 
-        //[TestMethod]
-        public void TestMat ()
+		[TestMethod]
+		public void TestMat ()
         {
             var mat1 = Mat.RotationX<Mat4> (30);
             var mat2 = Mat.RotationY<Mat4> (40);

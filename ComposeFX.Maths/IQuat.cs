@@ -8,13 +8,13 @@
 	{
 		Q Invert ();
 		Q Conjugate ();
-		Q Multiply (Q other);
+		Q Multiply (in Q other);
 		Q FromAxisAngle (T x, T y, T z, T angle);
 		V ToVector<V> () where V : struct, IVec<V, T>;
 		Mat3 ToMatrix ();
-		V RotateVec<V> (V vec) where V : struct, IVec<V, T>;
-		Q Lerp (Q other, T interPos);
-		Q Slerp (Q other, T interPos);
+		V RotateVec<V> (in V vec) where V : struct, IVec<V, T>;
+		Q Lerp (in Q other, T interPos);
+		Q Slerp (in Q other, T interPos);
 
 		Q Identity { get; }
 		T Length { get; }

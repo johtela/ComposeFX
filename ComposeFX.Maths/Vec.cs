@@ -189,7 +189,7 @@
 		/// compares the vectors approximately. The maximum allowed error is defined by the `epsilon`
 		/// parameter. If you want to allow for error in 4th decimal, for example, you should pass
 		/// in `epsilon` value of 0.001.
-		public static bool ApproxEquals<V> (V vec, V other, float epsilon)
+		public static bool ApproxEquals<V> (in V vec, in V other, float epsilon)
             where V : struct, IVec<V, float>
         {
 			var dim = vec.Dimensions;
@@ -289,19 +289,19 @@
 				yield return from.Mix (to, f);
 		}
 
-		public static float DistanceTo<V> (this V from, V to)
+		public static float DistanceTo<V> (this V from, in V to)
 			where V : struct, IVec<V, float>
 		{
 			return to.Subtract (from).Length;
 		}
 
-		public static float SquaredDistanceTo<V> (this V from, V to)
+		public static float SquaredDistanceTo<V> (this V from, in V to)
 			where V : struct, IVec<V, float>
 		{
 			return to.Subtract (from).LengthSquared;
 		}
 
-		public static float ManhattanDistanceTo<V> (this V from, V to)
+		public static float ManhattanDistanceTo<V> (this V from, in V to)
 			where V : struct, IVec<V, float>
 		{
 			return to.Subtract (from).Abs ().Sum ();
@@ -341,7 +341,7 @@
 		/// </summary>
 		/// This function maps the components of two vectors given as an argument to a result 
 		/// vector using a lambda exprerssion or function to do the transformation.
-		public static V Map2<V, T> (this V vec, V other, Func<T, T, T> map)
+		public static V Map2<V, T> (this V vec, in V other, Func<T, T, T> map)
 			where V : struct, IVec<V, T>
 			where T : struct, IEquatable<T>
 		{
@@ -356,7 +356,7 @@
 		/// </summary>
 		/// This function maps the components of three vectors given as an argument to a result 
 		/// vector using a lambda exprerssion or function to do the transformation.
-		public static V Map3<V, T> (this V vec1, V vec2, V vec3, Func<T, T, T, T> map)
+		public static V Map3<V, T> (this V vec1, in V vec2, in V vec3, Func<T, T, T, T> map)
 			where V : struct, IVec<V, T>
 			where T : struct, IEquatable<T>
 		{
@@ -395,12 +395,12 @@
 		/// of the normal depends on the order in which the positions are given. If you find that the 
 		/// normal is pointing to an opposite direction, switch the order of `adjecentPos1` and 
 		/// `adjacentPos2` parameters.
-		public static Vec3 CalculateNormal (this Vec3 position, Vec3 adjacentPos1, Vec3 adjacentPos2)
+		public static Vec3 CalculateNormal (this Vec3 position, in Vec3 adjacentPos1, in Vec3 adjacentPos2)
 		{
 			return (adjacentPos1 - position).Cross (adjacentPos2 - position).Normalized;
 		}
 
-		public static bool AreCollinear (this Vec3 pos1, Vec3 pos2, Vec3 pos3)
+		public static bool AreCollinear (this Vec3 pos1, in Vec3 pos2, in Vec3 pos3)
 		{
 			var vec1 = (pos2 - pos1).Normalized;
 			var vec2 = (pos3 - pos1).Normalized;
@@ -414,7 +414,7 @@
 		/// only makes sense in 3D, so function is only defined for <see cref="Vec3"/>.
 		[GLFunction ("cross ({0})")]
 		[CLFunction ("cross ({0})")]
-		public static Vec3 Cross (this Vec3 v1, Vec3 v2)
+		public static Vec3 Cross (this Vec3 v1, in Vec3 v2)
 		{
 			return new Vec3 (
 				v1.Y * v2.Z - v1.Z * v2.Y,
@@ -520,10 +520,10 @@
 		/// </summary>
 		[GLFunction ("min ({0})")]
 		[CLFunction ("min ({0})")]
-		public static V Min<V> (this V vec, V other)
+		public static V Min<V> (this V vec, in V other)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map2<V, float> (other, Math.Min);
+			return vec.Map2<V, float> (in other, Math.Min);
 		}
 
 		/// <summary>
@@ -531,10 +531,10 @@
 		/// </summary>
 		[GLFunction ("min ({0})")]
 		[CLFunction ("min ({0})")]
-		public static V Mini<V> (this V vec, V other)
+		public static V Mini<V> (this V vec, in V other)
 			where V : struct, IVec<V, int>
 		{
-			return vec.Map2<V, int> (other, Math.Min);
+			return vec.Map2<V, int> (in other, Math.Min);
 		}
 
 		/// <summary>
@@ -542,10 +542,10 @@
 		/// </summary>
 		[GLFunction ("max ({0})")]
 		[CLFunction ("max ({0})")]
-		public static V Max<V> (this V vec, V other)
+		public static V Max<V> (this V vec, in V other)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map2<V, float> (other, Math.Max);
+			return vec.Map2<V, float> (in other, Math.Max);
 		}
 
 		/// <summary>
@@ -553,10 +553,10 @@
 		/// </summary>
 		[GLFunction ("max ({0})")]
 		[CLFunction ("max ({0})")]
-		public static V Maxi<V> (this V vec, V other)
+		public static V Maxi<V> (this V vec, in V other)
 			where V : struct, IVec<V, int>
 		{
-			return vec.Map2<V, int> (other, Math.Max);
+			return vec.Map2<V, int> (in other, Math.Max);
 		}
 
 		/// <summary>
@@ -587,10 +587,10 @@
 		/// </summary>
 		[GLFunction ("clamp ({0})")]
 		[CLFunction ("clamp ({0})")]
-		public static V Clamp<V> (this V vec, V min, V max)
+		public static V Clamp<V> (this V vec, in V min, in V max)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map3<V, float> (min, max, FMath.Clamp);
+			return vec.Map3<V, float> (in min, in max, FMath.Clamp);
 		}
 
 		/// <summary>
@@ -599,10 +599,10 @@
 		/// </summary>
 		[GLFunction ("clamp ({0})")]
 		[CLFunction ("clamp ({0})")]
-		public static V Clampi<V> (this V vec, V min, V max)
+		public static V Clampi<V> (this V vec, in V min, in V max)
 			where V : struct, IVec<V, int>
 		{
-			return vec.Map3<V, int> (min, max, FMath.Clamp);
+			return vec.Map3<V, int> (in min, in max, FMath.Clamp);
 		}
 
 		/// <summary>
@@ -611,10 +611,10 @@
 		/// </summary>
 		[GLFunction ("mix ({0})")]
 		[CLFunction ("mix ({0})")]
-		public static V Mix<V> (this V vec, V other, V interPos)
+		public static V Mix<V> (this V vec, in V other, in V interPos)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map3<V, float> (other, interPos, FMath.Mix);
+			return vec.Map3<V, float> (in other, in interPos, FMath.Mix);
 		}
 
 		/// <summary>
@@ -622,10 +622,10 @@
 		/// </summary>
 		[GLFunction ("mix ({0})")]
 		[CLFunction ("mix ({0})")]
-		public static V Mix<V> (this V vec, V other, float interPos)
+		public static V Mix<V> (this V vec, in V other, float interPos)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map2<V, float> (other, (x, y) => FMath.Mix (x, y, interPos));
+			return vec.Map2<V, float> (in other, (x, y) => FMath.Mix (x, y, interPos));
 		}
 
 		/// <summary>
@@ -633,7 +633,7 @@
 		/// </summary>
 		[GLFunction ("step ({0})")]
 		[CLFunction ("step ({0})")]
-		public static V Step<V> (float edge, V vec)
+		public static V Step<V> (float edge, in V vec)
 			where V : struct, IVec<V, float>
 		{
 			return vec.Map<V, float> (a => FMath.Step (edge, a));
@@ -645,10 +645,10 @@
 		/// </summary>
 		[GLFunction ("step ({0})")]
 		[CLFunction ("step ({0})")]
-		public static V Step<V> (V edge, V vec)
+		public static V Step<V> (in V edge, in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return edge.Map2<V, float> (vec, FMath.Step);
+			return edge.Map2<V, float> (in vec, FMath.Step);
 		}
 
 		/// <summary>
@@ -656,7 +656,7 @@
 		/// </summary>
 		[GLFunction ("smoothstep ({0})")]
 		[CLFunction ("smoothstep ({0})")]
-		public static V SmoothStep<V> (float edgeLower, float edgeUpper, V vec)
+		public static V SmoothStep<V> (float edgeLower, float edgeUpper, in V vec)
 			where V : struct, IVec<V, float>
 		{
 			return vec.Map<V, float> (a => FMath.SmoothStep (edgeLower, edgeUpper, a));
@@ -668,10 +668,10 @@
 		/// </summary>
 		[GLFunction ("smoothstep ({0})")]
 		[CLFunction ("smoothstep ({0})")]
-		public static V SmoothStep<V> (V edgeLower, V edgeUpper, V vec)
+		public static V SmoothStep<V> (in V edgeLower, in V edgeUpper, in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return edgeLower.Map3<V, float> (edgeUpper, vec, FMath.SmoothStep);
+			return edgeLower.Map3<V, float> (in edgeUpper, in vec, FMath.SmoothStep);
 		}
 
 		/// <summary>
@@ -680,10 +680,10 @@
 		/// </summary>
 		[GLFunction ("pow ({0})")]
 		[CLFunction ("pow ({0})")]
-		public static V Pow<V> (this V vec, V exp)
+		public static V Pow<V> (this V vec, in V exp)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map2<V, float> (exp, FMath.Pow);
+			return vec.Map2<V, float> (in exp, FMath.Pow);
 		}
 
 		/// <summary>
@@ -740,10 +740,10 @@
 
 		[GLFunction ("mod ({0})")]
 		[CLFunction ("fmod ({0})")]
-		public static V Mod<V> (this V vec, V modulo)
+		public static V Mod<V> (this V vec, in V modulo)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map2<V, float> (modulo, (x, m) => x % m);
+			return vec.Map2<V, float> (in modulo, (x, m) => x % m);
 		}
 
 		/// <summary>
@@ -757,11 +757,11 @@
 		/// vector always has the same length as the incident vector. From this it follows that the 
 		/// reflection vector is normalized if `vec` and `along` vectors are both normalized.		
 		[GLFunction ("reflect ({0})")]
-		public static V Reflect<V, T> (this V vec, V along)
+		public static V Reflect<V, T> (this V vec, in V along)
 			where V : struct, IVec<V, float>
 			where T : struct, IEquatable<T>
 		{
-			return vec.Subtract (along.Multiply (2 * vec.Dot (along)));
+			return vec.Subtract (along.Multiply (2 * vec.Dot (in along)));
 		}
 
 		/// <summary>
@@ -835,10 +835,10 @@
 		/// </summary>
 		[GLFunction ("atan ({0})")]
 		[CLFunction ("atan ({0})")]
-		public static V Atan2<V> (this V y, V x)
+		public static V Atan2<V> (this V y, in V x)
 			where V : struct, IVec<V, float>
 		{
-			return y.Map2<V, float> (x, FMath.Atan2);
+			return y.Map2<V, float> (in x, FMath.Atan2);
 		}
 
         [GLFunction ("sign ({0})")]

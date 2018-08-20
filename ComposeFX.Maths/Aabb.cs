@@ -27,16 +27,16 @@
 		public readonly V Min;
 		public readonly V Max;
 
-		public Aabb (V pos)
+		public Aabb (in V pos)
 		{
 			Min = pos;
 			Max = pos;
 		}
 
-		public Aabb (V pos1, V pos2)
+		public Aabb (in V pos1, in V pos2)
 		{
-			Min = pos1.Min (pos2);
-			Max = pos2.Max (pos1);
+			Min = pos1.Min (in pos2);
+			Max = pos2.Max (in pos1);
 		}
 
 		/// <summary>
@@ -89,12 +89,12 @@
 
 		public V Size
 		{
-			get { return Max.Subtract (Min); }
+			get { return Max.Subtract (in Min); }
 		}
 
 		public V Center
 		{
-			get { return Min.Add (Max).Divide (2f); }
+			get { return Min.Add (in Max).Divide (2f); }
 		}
 
         public V[] Bounds
@@ -137,18 +137,18 @@
 			}
 		}
 
-		public static Aabb<V> operator + (Aabb<V> bbox, V pos)
+		public static Aabb<V> operator + (Aabb<V> bbox, in V pos)
 		{
 			return bbox == null ? 
 				new Aabb<V> (pos) :
-				new Aabb<V> (bbox.Min.Min (pos), bbox.Max.Max (pos));
+				new Aabb<V> (bbox.Min.Min (in pos), bbox.Max.Max (in pos));
 		}
 
 		public static Aabb<V> operator + (Aabb<V> bbox, Aabb<V> other)
 		{
 			return bbox == null || other == null ?
 				bbox ?? other :
-				new Aabb<V> (bbox.Min.Min (other.Min), bbox.Max.Max (other.Max));
+				new Aabb<V> (bbox.Min.Min (in other.Min), bbox.Max.Max (in other.Max));
 		}
 
 		public static bool operator & (Aabb<V> bbox, Aabb<V> other)
@@ -159,7 +159,7 @@
 			return true;
 		}
 
-		public static bool operator & (Aabb<V> bbox, V pos)
+		public static bool operator & (Aabb<V> bbox, in V pos)
 		{
 			for (int i = 0; i < bbox.Min.Dimensions; i++)
 				if (bbox.Max[i] < pos[i] || bbox.Min[i] > pos[i])
@@ -167,13 +167,14 @@
 			return true;
 		}
 		
-		public static Aabb<V> operator * (Mat4 matrix, Aabb<V> bbox)
+		public static Aabb<V> operator * (in Mat4 matrix, Aabb<V> bbox)
 		{
 			if (bbox == null)
 				return null;
-			var result = new Aabb<V> (matrix.Transform (bbox.Corners.First ()));
+			var first = matrix.Transform (bbox.Corners.First ());
+			var result = new Aabb<V> (in first);
 			foreach (var corner in bbox.Corners.Skip (1))
-				result += matrix.Transform (corner);
+				result += matrix.Transform (in corner);
 			return result;
 		}
 

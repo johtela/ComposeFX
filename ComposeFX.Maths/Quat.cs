@@ -2,15 +2,15 @@
 {
 	using ExtensionCord;
 
-	public struct Quat : IQuat<Quat, float>
+	public readonly struct Quat : IQuat<Quat, float>
 	{
 		private const float LERP_THRESHOLD = 0.99f;
 
-		public Vec3 Uvec;
-		public float W;
+		public readonly Vec3 Uvec;
+		public readonly float W;
 		public static readonly Quat Identity = new Quat (new Vec3 (0f), 1f);
 
-		public Quat (Vec3 vec, float w)
+		public Quat (in Vec3 vec, float w)
 		{
 			Uvec = vec;
 			W = w;
@@ -27,12 +27,12 @@
 			return new Vec4 (Uvec.X, Uvec.Y, Uvec.Z, W);
 		}
 
-		public static Quat FromVec4 (Vec4 vec)
+		public static Quat FromVec4 (in Vec4 vec)
 		{
 			return new Quat (vec.X, vec.Y, vec.Z, vec.W);
 		}
 
-		public static Quat FromAxisAngle (Vec3 axis, float angle)
+		public static Quat FromAxisAngle (in Vec3 axis, float angle)
 		{
 			var lensqr = axis.LengthSquared;
 			if (angle == 0f || lensqr == 0f)
@@ -76,34 +76,34 @@
 			return new Quat (-Uvec, W);
 		}
 
-		public Quat Multiply (Quat other)
+		public Quat Multiply (in Quat other)
 		{
 			return new Quat (other.W * Uvec + W * other.Uvec + Uvec.Cross (other.Uvec),
 				W * other.W - Uvec.Dot (other.Uvec));
 		}
 
-		public V RotateVec<V> (V vec) where V : struct, IVec<V, float>
+		public V RotateVec<V> (in V vec) where V : struct, IVec<V, float>
 		{
 			return (this * new Quat (vec[0], vec[1], vec[2], 0f) * Conjugate ()).ToVector<V> ();
 		}
 
-		public Vec3 RotateVec3 (Vec3 vec)
+		public Vec3 RotateVec3 (in Vec3 vec)
 		{
 			return (this * new Quat (vec, 0f) * Conjugate ()).Uvec;
 		}
 
-		public Quat Lerp (Quat other, float interPos)
+		public Quat Lerp (in Quat other, float interPos)
 		{
 			return FromVec4 (ToVec4 ().Mix (other.ToVec4 (), interPos).Normalized);
 		}
 
-		public Quat Slerp (Quat other, float interPos)
+		public Quat Slerp (in Quat other, float interPos)
 		{
 			var v1 = ToVec4 ();
 			var v2 = other.ToVec4 ();
-			var dot = v1.Dot (v2);
+			var dot = v1.Dot (in v2);
 			if (dot > LERP_THRESHOLD)
-				return FromVec4 (v1.Mix (v2, interPos));
+				return FromVec4 (v1.Mix (in v2, interPos));
 
 			var theta = dot.Acos () * interPos;
 			var v3 = (v2 - v1 * dot).Normalized;
@@ -134,32 +134,32 @@
 			}
 		}
 
-		public static implicit operator Vec4 (Quat quat)
+		public static implicit operator Vec4 (in Quat quat)
 		{
 			return quat.ToVec4 ();
 		}
 
-		public static implicit operator Quat (Vec4 vec)
+		public static implicit operator Quat (in Vec4 vec)
 		{
 			return FromVec4 (vec);
 		}
 
-		public static Quat operator - (Quat quat)
+		public static Quat operator - (in Quat quat)
 		{
 			return quat.Invert ();
 		}
 
-		public static Quat operator * (Quat left, Quat right)
+		public static Quat operator * (in Quat left, in Quat right)
 		{
 			return left.Multiply (right);
 		}
 
-		public static bool operator == (Quat left, Quat right)
+		public static bool operator == (in Quat left, in Quat right)
 		{
 			return left.Equals (right);
 		}
 
-		public static bool operator != (Quat left, Quat right)
+		public static bool operator != (in Quat left, in Quat right)
 		{
 			return !left.Equals (right);
 		}
