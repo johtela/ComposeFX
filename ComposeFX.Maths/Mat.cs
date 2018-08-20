@@ -139,7 +139,7 @@
             return ApproxEquals<M> (mat, other, 0.000001f);
         }
 
-        public static T[,] ToArray<M, T> (M mat)
+        public static T[,] ToArray<M, T> (this M mat)
             where M : struct, IMat<M, T>
             where T : struct, IEquatable<T>
         {
@@ -330,13 +330,13 @@
 			return mat.FromArray (res);
 		}
 
-        public static float Determinant<M> (M mat)
+        public static float Determinant<M> (this M mat)
             where M : struct, ISquareMat<M, float>
         {
             return DeterminantFA (ToJaggedArray<M, float> (mat));
         }
 
-        public static M Inverse<M> (M mat)
+        public static M Inverse<M> (this M mat)
             where M : struct, ISquareMat<M, float>
         {
             return FromJaggedArray<M, float> (InverseFA (ToJaggedArray<M, float> (mat)));
