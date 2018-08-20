@@ -139,7 +139,7 @@
             return ApproxEquals<M> (mat, other, 0.000001f);
         }
 
-        public static T[,] ToArray<M, T> (this M mat)
+        public static T[,] ToArray<M, T> (in M mat)
             where M : struct, IMat<M, T>
             where T : struct, IEquatable<T>
         {
@@ -242,8 +242,8 @@
 		
 		public static Mat4 ScalingPerpendicularTo (in Vec3 vec, in Vec2 factors)
 		{
-			var rotx = vec.XRotation ();
-			var roty = vec.YRotation ();
+			var rotx = Vec.XRotation (in vec);
+			var roty = Vec.YRotation (in vec);
 			return RotationX<Mat4> (rotx) * RotationY<Mat4> (roty) * 
 				Scaling<Mat4> (factors.X, factors.Y) * 
 				RotationY<Mat4> (-roty) * RotationX<Mat4> (-rotx);
@@ -310,7 +310,7 @@
 			return mat.FromArray (res);
 		}
 
-		public static M RelativeTo<M, V> (this M mat, in V vec)
+		public static M RelativeTo<M, V> (in M mat, in V vec)
 			where M : struct, ISquareMat<M, float>
 			where V : struct, IVec<V, float>
 		{
@@ -319,7 +319,7 @@
 				.Multiply (Translation<M> (vec.Multiply (-1f).ToArray ()));
 		}
 
-		public static M RemoveTranslation<M> (this M mat)
+		public static M RemoveTranslation<M> (in M mat)
 			where M : struct, ISquareMat<M, float>
 		{
 			var cols = mat.Columns;
@@ -330,13 +330,13 @@
 			return mat.FromArray (res);
 		}
 
-        public static float Determinant<M> (this M mat)
+        public static float Determinant<M> (in M mat)
             where M : struct, ISquareMat<M, float>
         {
             return DeterminantFA (ToJaggedArray<M, float> (mat));
         }
 
-        public static M Inverse<M> (this M mat)
+        public static M Inverse<M> (in M mat)
             where M : struct, ISquareMat<M, float>
         {
             return FromJaggedArray<M, float> (InverseFA (ToJaggedArray<M, float> (mat)));
@@ -375,8 +375,8 @@
 		public static Mat4 LookAt (in Vec3 direction, in Vec3 up)
 		{
 			var zaxis = -direction.Normalized;
-			var xaxis = up.Cross (zaxis).Normalized;
-			var yaxis = zaxis.Cross (xaxis);
+			var xaxis = Vec.Cross (in up, in zaxis).Normalized;
+			var yaxis = Vec.Cross (in zaxis, in xaxis);
 
 			return new Mat4 (
 				xaxis.X, yaxis.X, zaxis.X, 0f,
@@ -388,8 +388,8 @@
 		public static Mat4 LookAt (in Vec3 eye, in Vec3 target, in Vec3 up)
 		{
 			var zaxis = (eye - target).Normalized;
-			var xaxis = up.Cross (zaxis).Normalized;
-			var yaxis = zaxis.Cross (xaxis);
+			var xaxis = Vec.Cross (in up, in zaxis).Normalized;
+			var yaxis = Vec.Cross (in zaxis, in xaxis);
 
 			return new Mat4 (
 				xaxis.X, yaxis.X, zaxis.X, 0f,
@@ -398,7 +398,7 @@
 				-xaxis.Dot (eye), -yaxis.Dot (eye), -zaxis.Dot (eye), 1f);
 		}
 
-		public static V Transform<V> (this Mat4 mat, in V point)
+		public static V Transform<V> (in Mat4 mat, in V point)
 			where V : struct, IVec<V, float>
 		{
 			var arr = new float[4];

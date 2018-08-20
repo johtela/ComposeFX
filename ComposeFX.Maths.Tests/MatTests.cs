@@ -41,10 +41,10 @@
 			return res;
 		}
 
-		private static M FixZerosInDiagonal<M> (M mat)
+		private static M FixZerosInDiagonal<M> (in M mat)
             where M : struct, ISquareMat<M, float>
 		{
-			var arr = mat.ToArray<M, float> ();
+			var arr = Mat.ToArray<M, float> (in mat);
 			for (int i = 0; i < mat.Columns; i++)
 				if (arr[i, i] == 0f)
 					arr[i, i] = 1f;
@@ -59,7 +59,7 @@
             return new Arbitrary<M> ( 
                 from a in arb.Generate.Fixed2DArrayOf (cols, rows)
                 select Mat.FromArray<M, T> (a),
-                m => from a in Flatten (m.ToArray<M, T> ())
+                m => from a in Flatten (Mat.ToArray<M, T> (in m))
 						.Map (arb.Shrink).Combinations ()
                      select Mat.FromArray<M, T> (Unflatten (a, cols, rows)));
         }
@@ -149,8 +149,8 @@
 			(from v in Prop.ForAll<V> ()
 			 from o in Prop.ForAll<V> ()
 			 let last = v.Dimensions - 1
-			 let vec = v.With (last, 1f)
-			 let offset = v.With (last, 0f)
+			 let vec = Vec.ChangeComp (v, last, 1f)
+			 let offset = Vec.ChangeComp (v, last, 0f)
 			 let trans = Mat.Translation<M> (offset.ToArray ().Segment (0, last))
 			 let transvec = trans.Multiply (vec)
 			 select new { vec, offset, trans, transvec })
@@ -203,7 +203,7 @@
         {
 			(from omat in Prop.ForAll<M> ()
 			 let mat = FixZerosInDiagonal (omat)
-			 let inv = mat.Inverse ()
+			 let inv = mat.Inverse
 			 let mat_inv = mat.Multiply (inv)
 			 let ident = Mat.Identity<M> ()
 			 select new { mat, inv, mat_inv, ident })

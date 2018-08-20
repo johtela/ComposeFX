@@ -166,7 +166,7 @@
 		/// </summary>
 		/// This function is useful for generically transforming a vector to another vector
 		/// type that has the same component type but different number of components.
-		public static U Convert<V, U, T> (this V vec)
+		public static U Convert<V, U, T> (in V vec)
 			where V : struct, IVec<V, T>
 			where U : struct, IVec<U, T>
 			where T : struct, IEquatable<T>
@@ -174,7 +174,7 @@
 			return FromArray<U, T> (vec.ToArray ());
 		}
 
-		public static U Convert<V, U> (this V vec)
+		public static U Convert<V, U> (in V vec)
 			where V : struct, IVec<V, int>
 			where U : struct, IVec<U, float>
 		{
@@ -214,7 +214,7 @@
 		/// Many times it is necessary to change a single component of a vector. However, if you assign a
 		/// value to the component directly, you will mutate the original vector. To quickly return a copy 
 		/// of a vector with one component changed, this extension method is provided.
-        public static V With<V, T> (this V vec, int i, T value)
+        public static V ChangeComp<V, T> (in V vec, int i, T value)
             where V : struct, IVec<V, T>
             where T : struct, IEquatable<T>
         {
@@ -226,7 +226,7 @@
 		/// <summary>
 		/// Return the sum of all the components in the vector.
 		/// </summary>
-		public static float Sum<V> (this V vec)
+		public static float Sum<V> (in V vec)
 			where V : struct, IVec<V, float>
 		{
 			var dim = vec.Dimensions;
@@ -239,7 +239,7 @@
 		/// <summary>
 		/// Return the sum of all the components in the vector.
 		/// </summary>
-		public static int Sumi<V> (this V vec)
+		public static int Sumi<V> (in V vec)
 			where V : struct, IVec<V, int>
 		{
 			var dim = vec.Dimensions;
@@ -252,7 +252,7 @@
 		/// <summary>
 		/// Return the product of all the components in the vector.
 		/// </summary>
-		public static float Product<V> (this V vec)
+		public static float Product<V> (in V vec)
 			where V : struct, IVec<V, float>
 		{
 			var dim = vec.Dimensions;
@@ -265,7 +265,7 @@
 		/// <summary>
 		/// Return the product of all the components in the vector.
 		/// </summary>
-		public static int Producti<V> (this V vec)
+		public static int Producti<V> (in V vec)
 			where V : struct, IVec<V, int>
 		{
 			var dim = vec.Dimensions;
@@ -280,31 +280,31 @@
 		/// </summary>
 		/// Returns a sequence of vectors that contain the interpolated values. 
 		/// The number of elemens in the sequence is given in the `step` parameter.
-		public static IEnumerable<V> Interpolate<V> (this V from, V to, int steps)
+		public static IEnumerable<V> Interpolate<V> (V from, V to, int steps)
 			where V : struct, IVec<V, float>
 		{
 			var step = 1f / steps;
 			var f = 0f;
 			for (int i = 0; i < steps; i++, f += step)
-				yield return from.Mix (to, f);
+				yield return Mix (in from, in to, f);
 		}
 
-		public static float DistanceTo<V> (this V from, in V to)
+		public static float DistanceTo<V> (in V from, in V to)
 			where V : struct, IVec<V, float>
 		{
 			return to.Subtract (from).Length;
 		}
 
-		public static float SquaredDistanceTo<V> (this V from, in V to)
+		public static float SquaredDistanceTo<V> (in V from, in V to)
 			where V : struct, IVec<V, float>
 		{
 			return to.Subtract (from).LengthSquared;
 		}
 
-		public static float ManhattanDistanceTo<V> (this V from, in V to)
+		public static float ManhattanDistanceTo<V> (in V from, in V to)
 			where V : struct, IVec<V, float>
 		{
-			return to.Subtract (from).Abs ().Sum ();
+			return Sum (Abs (to.Subtract (in from)));
 		}
 
 		/// <summary>
@@ -312,7 +312,7 @@
 		/// </summary>
 		/// This function maps the components of a vector to another vector
 		/// using a lambda exprerssion or function to do the transformation.
-		public static V Map<V, T> (this V vec, Func<T, T> map)
+		public static V Map<V, T> (in V vec, Func<T, T> map)
 			where V : struct, IVec<V, T>
 			where T : struct, IEquatable<T>
 		{
@@ -322,7 +322,7 @@
 			return vec.FromArray (arr);
 		}
 
-		public static U Map<V, U, T, S> (this V vec, Func<T, S> map)
+		public static U Map<V, U, T, S> (in V vec, Func<T, S> map)
 			where V : struct, IVec<V, T>
 			where U : struct, IVec<U, S>
 			where T : struct, IEquatable<T>
@@ -341,7 +341,7 @@
 		/// </summary>
 		/// This function maps the components of two vectors given as an argument to a result 
 		/// vector using a lambda exprerssion or function to do the transformation.
-		public static V Map2<V, T> (this V vec, in V other, Func<T, T, T> map)
+		public static V Map2<V, T> (in V vec, in V other, Func<T, T, T> map)
 			where V : struct, IVec<V, T>
 			where T : struct, IEquatable<T>
 		{
@@ -356,7 +356,7 @@
 		/// </summary>
 		/// This function maps the components of three vectors given as an argument to a result 
 		/// vector using a lambda exprerssion or function to do the transformation.
-		public static V Map3<V, T> (this V vec1, in V vec2, in V vec3, Func<T, T, T, T> map)
+		public static V Map3<V, T> (in V vec1, in V vec2, in V vec3, Func<T, T, T, T> map)
 			where V : struct, IVec<V, T>
 			where T : struct, IEquatable<T>
 		{
@@ -366,7 +366,7 @@
 			return vec1.FromArray (arr);
 		}
 
-		public static bool All<V, T> (this V vec, Func<T, bool> predicate)
+		public static bool All<V, T> (in V vec, Func<T, bool> predicate)
 			where V : struct, IVec<V, T>
 			where T : struct, IEquatable<T>
 		{
@@ -377,7 +377,7 @@
 			return true;
 		}
 
-		public static bool Any<V, T> (this V vec, Func<T, bool> predicate)
+		public static bool Any<V, T> (in V vec, Func<T, bool> predicate)
 			where V : struct, IVec<V, T>
 			where T : struct, IEquatable<T>
 		{
@@ -395,12 +395,12 @@
 		/// of the normal depends on the order in which the positions are given. If you find that the 
 		/// normal is pointing to an opposite direction, switch the order of `adjecentPos1` and 
 		/// `adjacentPos2` parameters.
-		public static Vec3 CalculateNormal (this Vec3 position, in Vec3 adjacentPos1, in Vec3 adjacentPos2)
+		public static Vec3 CalculateNormal (in Vec3 position, in Vec3 adjacentPos1, in Vec3 adjacentPos2)
 		{
-			return (adjacentPos1 - position).Cross (adjacentPos2 - position).Normalized;
+			return Cross (adjacentPos1 - position, adjacentPos2 - position).Normalized;
 		}
 
-		public static bool AreCollinear (this Vec3 pos1, in Vec3 pos2, in Vec3 pos3)
+		public static bool AreCollinear (in Vec3 pos1, in Vec3 pos2, in Vec3 pos3)
 		{
 			var vec1 = (pos2 - pos1).Normalized;
 			var vec2 = (pos3 - pos1).Normalized;
@@ -414,7 +414,7 @@
 		/// only makes sense in 3D, so function is only defined for <see cref="Vec3"/>.
 		[GLFunction ("cross ({0})")]
 		[CLFunction ("cross ({0})")]
-		public static Vec3 Cross (this Vec3 v1, in Vec3 v2)
+		public static Vec3 Cross (in Vec3 v1, in Vec3 v2)
 		{
 			return new Vec3 (
 				v1.Y * v2.Z - v1.Z * v2.Y,
@@ -425,7 +425,7 @@
 		/// <summary>
 		/// The angle of the vector in YZ-plane. I.e. the angle of rotation around X-axis.
 		/// </summary>
-		public static float XRotation (this Vec3 vec)
+		public static float XRotation (in Vec3 vec)
 		{
 			return FMath.Atan2 (-vec.Y, vec.Z);
 		}
@@ -433,7 +433,7 @@
 		/// <summary>
 		/// The angle of the vector in XZ-plane. I.e. the angle of rotation around Y-axis.
 		/// </summary>
-		public static float YRotation (this Vec3 vec)
+		public static float YRotation (in Vec3 vec)
 		{
 			return FMath.Atan2 (vec.X, vec.Z);
 		}
@@ -443,10 +443,10 @@
 		/// </summary>
 		[GLFunction ("radians ({0})")]
 		[CLFunction ("radians ({0})")]
-		public static V Radians<V> (this V vec)
+		public static V Radians<V> (in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map<V, float> (FMath.Radians);
+			return Map<V, float> (in vec, FMath.Radians);
 		}
 
 		/// <summary>
@@ -454,10 +454,10 @@
 		/// </summary>
 		[GLFunction ("degrees ({0})")]
 		[CLFunction ("degrees ({0})")]
-		public static V Degrees<V> (this V vec)
+		public static V Degrees<V> (in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map<V, float> (FMath.Degrees);
+			return Map<V, float> (in vec, FMath.Degrees);
 		}
 
 		/// <summary>
@@ -465,10 +465,10 @@
 		/// </summary>
 		[GLFunction ("abs ({0})")]
 		[CLFunction ("fabs ({0})")]
-		public static V Abs<V> (this V vec)
+		public static V Abs<V> (in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map<V, float> (Math.Abs);
+			return Map<V, float> (in vec, Math.Abs);
 		}
 
 		/// <summary>
@@ -476,10 +476,10 @@
 		/// </summary>
 		[GLFunction ("floor ({0})")]
 		[CLFunction ("floor ({0})")]
-		public static V Floor<V> (this V vec)
+		public static V Floor<V> (in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map<V, float> (FMath.Floor);
+			return Map<V, float> (in vec, FMath.Floor);
 		}
 
 		/// <summary>
@@ -487,10 +487,10 @@
 		/// </summary>
 		[GLFunction ("ceil ({0})")]
 		[CLFunction ("ceil ({0})")]
-		public static V Ceiling<V> (this V vec)
+		public static V Ceiling<V> (in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map<V, float> (FMath.Ceiling);
+			return Map<V, float> (in vec, FMath.Ceiling);
 		}
 
 		/// <summary>
@@ -498,10 +498,10 @@
 		/// </summary>
 		[GLFunction ("trunc ({0})")]
 		[CLFunction ("trunc ({0})")]
-		public static V Truncate<V> (this V vec)
+		public static V Truncate<V> (in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map<V, float> (FMath.Truncate);
+			return Map<V, float> (in vec, FMath.Truncate);
 		}
 
 		/// <summary>
@@ -509,10 +509,10 @@
 		/// </summary>
 		[GLFunction ("fract ({0})")]
 		[CLFunction ("({0} - floor ({0}))")]
-		public static V Fraction<V> (this V vec)
+		public static V Fraction<V> (in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map<V, float> (FMath.Fraction);
+			return Map<V, float> (in vec, FMath.Fraction);
 		}
 
 		/// <summary>
@@ -520,10 +520,10 @@
 		/// </summary>
 		[GLFunction ("min ({0})")]
 		[CLFunction ("min ({0})")]
-		public static V Min<V> (this V vec, in V other)
+		public static V Min<V> (in V vec1, in V vec2)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map2<V, float> (in other, Math.Min);
+			return Map2<V, float> (in vec1, in vec2, Math.Min);
 		}
 
 		/// <summary>
@@ -531,10 +531,10 @@
 		/// </summary>
 		[GLFunction ("min ({0})")]
 		[CLFunction ("min ({0})")]
-		public static V Mini<V> (this V vec, in V other)
+		public static V Mini<V> (in V vec1, in V vec2)
 			where V : struct, IVec<V, int>
 		{
-			return vec.Map2<V, int> (in other, Math.Min);
+			return Map2<V, int> (in vec1, in vec2, Math.Min);
 		}
 
 		/// <summary>
@@ -542,10 +542,10 @@
 		/// </summary>
 		[GLFunction ("max ({0})")]
 		[CLFunction ("max ({0})")]
-		public static V Max<V> (this V vec, in V other)
+		public static V Max<V> (in V vec1, in V vec2)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map2<V, float> (in other, Math.Max);
+			return Map2<V, float> (in vec1, in vec2, Math.Max);
 		}
 
 		/// <summary>
@@ -553,10 +553,10 @@
 		/// </summary>
 		[GLFunction ("max ({0})")]
 		[CLFunction ("max ({0})")]
-		public static V Maxi<V> (this V vec, in V other)
+		public static V Maxi<V> (in V vec1, in V vec2)
 			where V : struct, IVec<V, int>
 		{
-			return vec.Map2<V, int> (in other, Math.Max);
+			return Map2<V, int> (in vec1, in vec2, Math.Max);
 		}
 
 		/// <summary>
@@ -564,10 +564,10 @@
 		/// </summary>
 		[GLFunction ("clamp ({0})")]
 		[CLFunction ("clamp ({0})")]
-		public static V Clamp<V> (this V vec, float min, float max)
+		public static V Clamp<V> (in V vec, float min, float max)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map<V, float> (a => FMath.Clamp (a, min, max));
+			return Map<V, float> (in vec, a => FMath.Clamp (a, min, max));
 		}
 
 		/// <summary>
@@ -575,10 +575,10 @@
 		/// </summary>
 		[GLFunction ("clamp ({0})")]
 		[CLFunction ("clamp ({0})")]
-		public static V Clamp<V> (this V vec, int min, int max)
+		public static V Clamp<V> (in V vec, int min, int max)
 			where V : struct, IVec<V, int>
 		{
-			return vec.Map<V, int> (a => FMath.Clamp (a, min, max));
+			return Map<V, int> (in vec, a => FMath.Clamp (a, min, max));
 		}
 
 		/// <summary>
@@ -587,10 +587,10 @@
 		/// </summary>
 		[GLFunction ("clamp ({0})")]
 		[CLFunction ("clamp ({0})")]
-		public static V Clamp<V> (this V vec, in V min, in V max)
+		public static V Clamp<V> (in V vec, in V min, in V max)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map3<V, float> (in min, in max, FMath.Clamp);
+			return Map3<V, float> (in vec, in min, in max, FMath.Clamp);
 		}
 
 		/// <summary>
@@ -599,10 +599,10 @@
 		/// </summary>
 		[GLFunction ("clamp ({0})")]
 		[CLFunction ("clamp ({0})")]
-		public static V Clampi<V> (this V vec, in V min, in V max)
+		public static V Clampi<V> (in V vec, in V min, in V max)
 			where V : struct, IVec<V, int>
 		{
-			return vec.Map3<V, int> (in min, in max, FMath.Clamp);
+			return Map3<V, int> (in vec, in min, in max, FMath.Clamp);
 		}
 
 		/// <summary>
@@ -611,10 +611,10 @@
 		/// </summary>
 		[GLFunction ("mix ({0})")]
 		[CLFunction ("mix ({0})")]
-		public static V Mix<V> (this V vec, in V other, in V interPos)
+		public static V Mix<V> (in V vec, in V other, in V interPos)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map3<V, float> (in other, in interPos, FMath.Mix);
+			return Map3<V, float> (in vec, in other, in interPos, FMath.Mix);
 		}
 
 		/// <summary>
@@ -622,10 +622,10 @@
 		/// </summary>
 		[GLFunction ("mix ({0})")]
 		[CLFunction ("mix ({0})")]
-		public static V Mix<V> (this V vec, in V other, float interPos)
+		public static V Mix<V> (in V vec1, in V vec2, float interPos)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map2<V, float> (in other, (x, y) => FMath.Mix (x, y, interPos));
+			return Map2<V, float> (in vec1, in vec2, (x, y) => FMath.Mix (x, y, interPos));
 		}
 
 		/// <summary>
@@ -636,7 +636,7 @@
 		public static V Step<V> (float edge, in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map<V, float> (a => FMath.Step (edge, a));
+			return Map<V, float> (in vec, a => FMath.Step (edge, a));
 		}
 
 		/// <summary>
@@ -648,7 +648,7 @@
 		public static V Step<V> (in V edge, in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return edge.Map2<V, float> (in vec, FMath.Step);
+			return Map2<V, float> (in edge, in vec, FMath.Step);
 		}
 
 		/// <summary>
@@ -659,7 +659,7 @@
 		public static V SmoothStep<V> (float edgeLower, float edgeUpper, in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map<V, float> (a => FMath.SmoothStep (edgeLower, edgeUpper, a));
+			return Map<V, float> (in vec, a => FMath.SmoothStep (edgeLower, edgeUpper, a));
 		}
 
 		/// <summary>
@@ -671,7 +671,7 @@
 		public static V SmoothStep<V> (in V edgeLower, in V edgeUpper, in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return edgeLower.Map3<V, float> (in edgeUpper, in vec, FMath.SmoothStep);
+			return Map3<V, float> (in edgeLower, in edgeUpper, in vec, FMath.SmoothStep);
 		}
 
 		/// <summary>
@@ -680,10 +680,10 @@
 		/// </summary>
 		[GLFunction ("pow ({0})")]
 		[CLFunction ("pow ({0})")]
-		public static V Pow<V> (this V vec, in V exp)
+		public static V Pow<V> (in V vec, in V exp)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map2<V, float> (in exp, FMath.Pow);
+			return Map2<V, float> (in vec, in exp, FMath.Pow);
 		}
 
 		/// <summary>
@@ -691,10 +691,10 @@
 		/// </summary>
 		[GLFunction ("exp ({0})")]
 		[CLFunction ("exp ({0})")]
-		public static V Exp<V> (this V vec)
+		public static V Exp<V> (in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map<V, float> (FMath.Exp);
+			return Map<V, float> (in vec, FMath.Exp);
 		}
 
 		/// <summary>
@@ -702,10 +702,10 @@
 		/// </summary>
 		[GLFunction ("log ({0})")]
 		[CLFunction ("log ({0})")]
-		public static V Log<V> (this V vec)
+		public static V Log<V> (in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map<V, float> (FMath.Log);
+			return Map<V, float> (in vec, FMath.Log);
 		}
 
 		/// <summary>
@@ -713,10 +713,10 @@
 		/// </summary>
 		[GLFunction ("sqrt ({0})")]
 		[CLFunction ("sqrt ({0})")]
-		public static V Sqrt<V> (this V vec)
+		public static V Sqrt<V> (in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map<V, float> (FMath.Sqrt);
+			return Map<V, float> (in vec, FMath.Sqrt);
 		}
 
 		/// <summary>
@@ -724,26 +724,26 @@
 		/// </summary>
 		[GLFunction ("inversesqrt ({0})")]
 		[CLFunction ("inversesqrt ({0})")]
-		public static V InverseSqrt<V> (this V vec)
+		public static V InverseSqrt<V> (in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map<V, float> (FMath.InverseSqrt);
+			return Map<V, float> (in vec, FMath.InverseSqrt);
 		}
 
 		[GLFunction ("mod ({0})")]
 		[CLFunction ("fmod ({0})")]
-		public static V Mod<V> (this V vec, float modulo)
+		public static V Mod<V> (in V vec, float modulo)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map<V, float> (x => x % modulo);
+			return Map<V, float> (in vec, x => x % modulo);
 		}
 
 		[GLFunction ("mod ({0})")]
 		[CLFunction ("fmod ({0})")]
-		public static V Mod<V> (this V vec, in V modulo)
+		public static V Mod<V> (in V vec, in V modulo)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Map2<V, float> (in modulo, (x, m) => x % m);
+			return Map2<V, float> (in vec, in modulo, (x, m) => x % m);
 		}
 
 		/// <summary>
@@ -757,7 +757,7 @@
 		/// vector always has the same length as the incident vector. From this it follows that the 
 		/// reflection vector is normalized if `vec` and `along` vectors are both normalized.		
 		[GLFunction ("reflect ({0})")]
-		public static V Reflect<V, T> (this V vec, in V along)
+		public static V Reflect<V, T> (in V vec, in V along)
 			where V : struct, IVec<V, float>
 			where T : struct, IEquatable<T>
 		{
@@ -769,10 +769,10 @@
 		/// </summary>
 		[GLFunction ("sin ({0})")]
 		[CLFunction ("sin ({0})")]
-		public static V Sin<V> (this V angles)
+		public static V Sin<V> (in V angles)
 			where V : struct, IVec<V, float>
 		{
-			return angles.Map<V, float> (FMath.Sin);
+			return Map<V, float> (in angles, FMath.Sin);
 		}
 
 		/// <summary>
@@ -780,10 +780,10 @@
 		/// </summary>
 		[GLFunction ("cos ({0})")]
 		[CLFunction ("cos ({0})")]
-		public static V Cos<V> (this V angles)
+		public static V Cos<V> (in V angles)
 			where V : struct, IVec<V, float>
 		{
-			return angles.Map<V, float> (FMath.Cos);
+			return Map<V, float> (in angles, FMath.Cos);
 		}
 
 		/// <summary>
@@ -791,10 +791,10 @@
 		/// </summary>
 		[GLFunction ("tan ({0})")]
 		[CLFunction ("tan ({0})")]
-		public static V Tan<V> (this V angles)
+		public static V Tan<V> (in V angles)
 			where V : struct, IVec<V, float>
 		{
-			return angles.Map<V, float> (FMath.Tan);
+			return Map<V, float> (in angles, FMath.Tan);
 		}
 
 		/// <summary>
@@ -802,10 +802,10 @@
 		/// </summary>
 		[GLFunction ("asin ({0})")]
 		[CLFunction ("asin ({0})")]
-		public static V Asin<V> (this V x)
+		public static V Asin<V> (in V x)
 			where V : struct, IVec<V, float>
 		{
-			return x.Map<V, float> (FMath.Asin);
+			return Map<V, float> (in x, FMath.Asin);
 		}
 
 		/// <summary>
@@ -813,10 +813,10 @@
 		/// </summary>
 		[GLFunction ("acos ({0})")]
 		[CLFunction ("acos ({0})")]
-		public static V Acos<V> (this V x)
+		public static V Acos<V> (in V x)
 			where V : struct, IVec<V, float>
 		{
-			return x.Map<V, float> (FMath.Acos);
+			return Map<V, float> (in x, FMath.Acos);
 		}
 
 		/// <summary>
@@ -824,10 +824,10 @@
 		/// </summary>
 		[GLFunction ("atan ({0})")]
 		[CLFunction ("atan ({0})")]
-		public static V Atan<V> (this V y_over_x)
+		public static V Atan<V> (in V y_over_x)
 			where V : struct, IVec<V, float>
 		{
-			return y_over_x.Map<V, float> (FMath.Atan);
+			return Map<V, float> (in y_over_x, FMath.Atan);
 		}
 
 		/// <summary>
@@ -835,27 +835,27 @@
 		/// </summary>
 		[GLFunction ("atan ({0})")]
 		[CLFunction ("atan ({0})")]
-		public static V Atan2<V> (this V y, in V x)
+		public static V Atan2<V> (in V y, in V x)
 			where V : struct, IVec<V, float>
 		{
-			return y.Map2<V, float> (in x, FMath.Atan2);
+			return Map2<V, float> (in y, in x, FMath.Atan2);
 		}
 
         [GLFunction ("sign ({0})")]
         [CLFunction ("sign ({0})")]
-        public static V Sign<V> (this V vec)
+        public static V Sign<V> (in V vec)
 			where V : struct, IVec<V, float>
         {
-            return vec.Map<V, float> (FMath.Sign);
+            return Map<V, float> (in vec, FMath.Sign);
         }
 
 		/// <summary>
 		/// Check whether any of the components of the vector are NaN. 
 		/// </summary>
-		public static bool IsNaN<V> (this V vec)
+		public static bool IsNaN<V> (in V vec)
 			where V : struct, IVec<V, float>
 		{
-			return vec.Any<V, float> (float.IsNaN);
+			return Any<V, float> (in vec, float.IsNaN);
 		}
 
 		private static readonly Random _random = new Random ();
@@ -877,7 +877,7 @@
 				(float)rnd.NextDouble () * range + rangeMin);
 		}
 
-		public static V Jitter<V> (this V vec, float maxDelta)
+		public static V Jitter<V> (in V vec, float maxDelta)
 			where V : struct, IVec<V, float>
 		{
 			return vec.Add (Random<V> (new Random (vec.GetHashCode ()), -maxDelta, maxDelta));

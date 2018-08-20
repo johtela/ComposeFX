@@ -78,8 +78,8 @@
 
 		public Quat Multiply (in Quat other)
 		{
-			return new Quat (other.W * Uvec + W * other.Uvec + Uvec.Cross (other.Uvec),
-				W * other.W - Uvec.Dot (other.Uvec));
+			return new Quat (other.W * Uvec + W * other.Uvec + Vec.Cross (in Uvec, in other.Uvec),
+				W * other.W - Uvec.Dot (in other.Uvec));
 		}
 
 		public V RotateVec<V> (in V vec) where V : struct, IVec<V, float>
@@ -94,7 +94,7 @@
 
 		public Quat Lerp (in Quat other, float interPos)
 		{
-			return FromVec4 (ToVec4 ().Mix (other.ToVec4 (), interPos).Normalized);
+			return FromVec4 (Vec.Mix (ToVec4 (), other.ToVec4 (), interPos).Normalized);
 		}
 
 		public Quat Slerp (in Quat other, float interPos)
@@ -103,7 +103,7 @@
 			var v2 = other.ToVec4 ();
 			var dot = v1.Dot (in v2);
 			if (dot > LERP_THRESHOLD)
-				return FromVec4 (v1.Mix (in v2, interPos));
+				return FromVec4 (Vec.Mix (in v1, in v2, interPos));
 
 			var theta = dot.Acos () * interPos;
 			var v3 = (v2 - v1 * dot).Normalized;

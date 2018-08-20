@@ -15,7 +15,7 @@
             Origin = origin;
             Direction = direction;
             _invDir = 1f / Direction;
-            _dirSign = Direction.Sign ().Max (new Vec3 (0)).ToVeci ();
+            _dirSign = Vec.Max (Vec.Sign (in Direction), new Vec3 (0)).ToVeci ();
         }
 
         public float Intersects (Aabb<Vec3> aabb)

@@ -35,8 +35,8 @@
 
 		public Aabb (in V pos1, in V pos2)
 		{
-			Min = pos1.Min (in pos2);
-			Max = pos2.Max (in pos1);
+			Min = Vec.Min (in pos1, in pos2);
+			Max = Vec.Max (in pos1, in pos2);
 		}
 
 		/// <summary>
@@ -141,14 +141,16 @@
 		{
 			return bbox == null ? 
 				new Aabb<V> (pos) :
-				new Aabb<V> (bbox.Min.Min (in pos), bbox.Max.Max (in pos));
+				new Aabb<V> (Vec.Min (in bbox.Min, in pos), 
+					Vec.Max (in bbox.Max, in pos));
 		}
 
 		public static Aabb<V> operator + (Aabb<V> bbox, Aabb<V> other)
 		{
 			return bbox == null || other == null ?
 				bbox ?? other :
-				new Aabb<V> (bbox.Min.Min (in other.Min), bbox.Max.Max (in other.Max));
+				new Aabb<V> (Vec.Min (in bbox.Min, in other.Min), 
+					Vec.Max (in bbox.Max, in other.Max));
 		}
 
 		public static bool operator & (Aabb<V> bbox, Aabb<V> other)
@@ -171,10 +173,10 @@
 		{
 			if (bbox == null)
 				return null;
-			var first = matrix.Transform (bbox.Corners.First ());
+			var first = Mat.Transform (in matrix, bbox.Corners.First ());
 			var result = new Aabb<V> (in first);
 			foreach (var corner in bbox.Corners.Skip (1))
-				result += matrix.Transform (in corner);
+				result += Mat.Transform (in matrix, in corner);
 			return result;
 		}
 
@@ -188,8 +190,7 @@
 
 		public override bool Equals (object obj)
 		{
-			var other = obj as Aabb<V>;
-			return other != null && Min.Equals (other.Min) && Max.Equals (other.Max);
+			return obj is Aabb<V> other && Min.Equals (other.Min) && Max.Equals (other.Max);
 		}
 
 		public override int GetHashCode ()
