@@ -5,6 +5,15 @@
 
 	public static class Convert
 	{
+		public static void TestIL ()
+		{
+			var pos = new Vec2 ();
+			if (pos.X < -1 || pos.X > 1 || pos.Y < -1 || pos.Y > 1)
+			{
+				pos = Vec.Clamp (pos, new Vec2 (-1f, -1f), new Vec2 (1f, 1f));
+			}
+		}
+
 		[GLFunction ("ivec2 ({0})")]
 		[CLFunction ("convert_int2 ({0})")]
 		public static Vec2i ToVeci (this Vec2 vec)
