@@ -11,6 +11,9 @@
 	[GLType ("mat2")]
     public readonly struct Mat2 : ISquareMat<Mat2, float>
     { 
+		private static readonly Mat2 _zero = new Mat2 ();
+		private static readonly Mat2 _identity = new Mat2 (1);
+
 		/// <summary>
 		/// Column 0 of the matrix.
 		/// </summary>
@@ -19,6 +22,12 @@
 		/// Column 1 of the matrix.
 		/// </summary>
 		public readonly Vec2 Column1; 
+
+		/// <summary>
+		/// Static references to the zero matrix and the identity matrix.
+		/// </summary>
+		public static ref readonly Mat2 Zero => ref _zero;
+		public static ref readonly Mat2 Identity => ref _identity;
 
 		/// <summary>
 		/// Initialize a matrix given its columns.
@@ -140,6 +149,11 @@
 			get { return this[column][row]; }
 		} 
 					
+		/// <summary>
+		/// Return the identity matrix.
+		/// </summary>
+		ref readonly Mat2 ISquareMat<Mat2, float>.Identity => ref _identity;
+
 		/// <summary>
 		/// Add two matrices together componentwise.
 		/// </summary>

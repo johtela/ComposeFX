@@ -93,6 +93,11 @@
 		where T : struct, IEquatable<T>
 	{
 		/// <summary>
+		/// Return reference to the identity matrix.
+		/// </summary>
+		ref readonly M Identity { get; }
+
+		/// <summary>
 		/// Multiply two matrices together. Matrix multiplication combines the affine
 		/// transformations that the matrices represent. It is the most common operation
 		/// performed on matrices. <see href="https://en.wikipedia.org/wiki/Matrix_multiplication"/>
@@ -200,15 +205,10 @@
             return mat.FromArray (res);
         }
 
-        public static M Identity<M> ()
+        public static ref readonly M Identity<M> ()
             where M : struct, ISquareMat<M, float>
         {
-			var mat = default (M);
-			var cols = mat.Columns;
-			var res = new float[cols, cols];
-			for (int c = 0; c < cols; c++)
-                res[c, c] = 1f;
-            return mat.FromArray (res);
+			return ref default (M).Identity;
         }
 
         public static M Translation<M> (params float[] offsets)

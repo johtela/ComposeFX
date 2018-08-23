@@ -14,6 +14,9 @@
 	[CLType ("int4")]
     public readonly struct Vec4i : IVec<Vec4i, int>
     { 
+		private static readonly Vec4i _zero = new Vec4i ();
+		private static readonly Vec4i _one = new Vec4i (1);
+
 		/// <summary>
 		/// The X component of the vector.
 		/// </summary>
@@ -41,6 +44,12 @@
 		[GLField ("w")]
 		[CLField ("w")]
         public readonly int W; 
+
+		/// <summary>
+		/// Static references to vectors with all zeroes or ones.
+		/// </summary>
+		public static ref readonly Vec4i Zero => ref _zero;
+		public static ref readonly Vec4i One => ref _one;
 
 		/// <summary>
 		/// Initialize all of the components of the vector.

@@ -21,7 +21,16 @@
 	[CLType ("<#= type #><#= dim #>")]
     public readonly struct <#= vecType #> : IVec<<#= vecType #>, <#= type #>>
     { 
+		private static readonly <#= vecType #> _zero = new <#= vecType #> ();
+		private static readonly <#= vecType #> _one = new <#= vecType #> (1);
+
 <#+		ComponentFields (dim, type); #>
+		/// <summary>
+		/// Static references to vectors with all zeroes or ones.
+		/// </summary>
+		public static ref readonly <#= vecType #> Zero => ref _zero;
+		public static ref readonly <#= vecType #> One => ref _one;
+
 		/// <summary>
 		/// Initialize all of the components of the vector.
 		/// </summary>

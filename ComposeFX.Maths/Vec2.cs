@@ -14,6 +14,9 @@
 	[CLType ("float2")]
     public readonly struct Vec2 : IVec<Vec2, float>
     { 
+		private static readonly Vec2 _zero = new Vec2 ();
+		private static readonly Vec2 _one = new Vec2 (1);
+
 		/// <summary>
 		/// The X component of the vector.
 		/// </summary>
@@ -27,6 +30,12 @@
 		[GLField ("y")]
 		[CLField ("y")]
         public readonly float Y; 
+
+		/// <summary>
+		/// Static references to vectors with all zeroes or ones.
+		/// </summary>
+		public static ref readonly Vec2 Zero => ref _zero;
+		public static ref readonly Vec2 One => ref _one;
 
 		/// <summary>
 		/// Initialize all of the components of the vector.

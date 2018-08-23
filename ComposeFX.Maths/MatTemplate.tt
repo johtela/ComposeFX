@@ -22,7 +22,16 @@ namespace ComposeFX.Maths
 	[GLType ("<#= glType #>")]
     public readonly struct <#= matType #> : I<#= square ? "Square" : "" #>Mat<<#= matType #>, <#= type #>>
     { 
+		private static readonly <#= matType #> _zero = new <#= matType #> ();
+		private static readonly <#= matType #> _identity = new <#= matType #> (1);
+
 <#+		ColumnFields (cols, vecType); #>
+		/// <summary>
+		/// Static references to the zero matrix and the identity matrix.
+		/// </summary>
+		public static ref readonly <#= matType #> Zero => ref _zero;
+		public static ref readonly <#= matType #> Identity => ref _identity;
+
 		/// <summary>
 		/// Initialize a matrix given its columns.
 		/// </summary>
@@ -50,6 +59,11 @@ namespace ComposeFX.Maths
 <#+		AllValuesConstructor (cols, rows, type, matType, vecType);
 		FromArray (cols, rows, type, matType, vecType);
 		Indexers (cols, rows, type, vecType); #>
+		/// <summary>
+		/// Return the identity matrix.
+		/// </summary>
+		ref readonly <#= matType #> ISquareMat<<#= matType #>, <#= type #>>.Identity => ref _identity;
+
 		/// <summary>
 		/// Add two matrices together componentwise.
 		/// </summary>
