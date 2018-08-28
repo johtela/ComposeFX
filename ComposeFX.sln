@@ -12,9 +12,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComposeFX.Compiler", "Compo
 		{1FEA1738-EE6D-404F-A711-7F83E4DC4EC6} = {1FEA1738-EE6D-404F-A711-7F83E4DC4EC6}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpirV", "SpirV\SpirV.csproj", "{BC587042-3DB7-45AF-8DFD-8AD344D7EFC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComposeFX.Compiler.Tests", "ComposeFX.Compiler.Tests\ComposeFX.Compiler.Tests.csproj", "{576FD5CA-6935-4794-BB67-7EA4BDE138C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComposeFX.Compiler.Tests", "ComposeFX.Compiler.Tests\ComposeFX.Compiler.Tests.csproj", "{576FD5CA-6935-4794-BB67-7EA4BDE138C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComposeFX.SpirV", "ComposeFX.SpirV\ComposeFX.SpirV.csproj", "{8209ADAF-D85A-413E-B1D9-EE78066CE360}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,14 +34,14 @@ Global
 		{5BA7FD4D-AB1A-4D9C-8D93-F1575E2C5FEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BA7FD4D-AB1A-4D9C-8D93-F1575E2C5FEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BA7FD4D-AB1A-4D9C-8D93-F1575E2C5FEC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC587042-3DB7-45AF-8DFD-8AD344D7EFC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC587042-3DB7-45AF-8DFD-8AD344D7EFC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC587042-3DB7-45AF-8DFD-8AD344D7EFC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC587042-3DB7-45AF-8DFD-8AD344D7EFC3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{576FD5CA-6935-4794-BB67-7EA4BDE138C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{576FD5CA-6935-4794-BB67-7EA4BDE138C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{576FD5CA-6935-4794-BB67-7EA4BDE138C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{576FD5CA-6935-4794-BB67-7EA4BDE138C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8209ADAF-D85A-413E-B1D9-EE78066CE360}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8209ADAF-D85A-413E-B1D9-EE78066CE360}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8209ADAF-D85A-413E-B1D9-EE78066CE360}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8209ADAF-D85A-413E-B1D9-EE78066CE360}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

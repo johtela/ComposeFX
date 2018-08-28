@@ -1,15 +1,15 @@
 ﻿namespace ComposeFX.Compiler
 {
+	using ComposeFX.SpirV;
 	using System;
 	using System.Collections.Generic;
 	using System.Text;
-	using Mono.Cecil;
-	using Mono.Cecil.Cil;
 
 	public class BasicBlock
     {
 		public List<BasicBlock> Predecessors { get; }
 		public List<BasicBlock> Successors { get; }
+		public List<Opcode> Opcodes { get; }
 
 		public BasicBlock ()
 		{

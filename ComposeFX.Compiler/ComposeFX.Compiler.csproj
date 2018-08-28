@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SpirV\SpirV.csproj" />
+    <ProjectReference Include="..\ComposeFX.SpirV\ComposeFX.SpirV.csproj" />
   </ItemGroup>
 
 </Project>
