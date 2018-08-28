@@ -709,7 +709,7 @@
 		Max = 0x7fffffff,
 	}
 
-	public enum Op : uint
+	public enum Op : ushort
 	{
 		OpNop = 0,
 		OpUndef = 1,
@@ -1078,6 +1078,6 @@
 		OpSubgroupImageBlockWriteINTEL = 5578,
 		OpDecorateStringGOOGLE = 5632,
 		OpMemberDecorateStringGOOGLE = 5633,
-		Max = 0x7fffffff,
+		Max = 0x7fff,
 	}
 }

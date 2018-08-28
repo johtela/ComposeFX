@@ -8,7 +8,7 @@
 	public class ShaderAttribute : Attribute { }
 
 	[AttributeUsage (AttributeTargets.Method)]
-	public class ShaderFunctionAttribute : Attribute { }
+	public class ShaderMainAttribute : Attribute { }
 
 
 }

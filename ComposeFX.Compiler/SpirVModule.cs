@@ -4,29 +4,29 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using Mono.Cecil;
-	using Mono.Cecil.Cil;
 	using ComposeFX.SpirV;
 
-	public class ShaderModule
+	public class SpirVModule
     {
 
 
-		public ShaderModule (TypeDefinition typedef)
+		public SpirVModule (TypeDefinition typedef)
 		{
 			foreach (var md in typedef.Methods)
 				if (HasAttribute (md.CustomAttributes, 
-					typeof (ShaderFunctionAttribute)))
+					typeof (ShaderMainAttribute)))
 				{
+
 				}
 		}
 
-		public static IEnumerable<ShaderModule> ModulesInAssembly (
+		public static IEnumerable<SpirVModule> ModulesInAssembly (
 			string assemblyPath)
 		{
 			var assy = AssemblyDefinition.ReadAssembly (assemblyPath);
 			return from t in assy.MainModule.Types
 				   where HasAttribute (t.CustomAttributes, typeof (ShaderAttribute))
-				   select new ShaderModule (t);
+				   select new SpirVModule (t);
 		}
 
 		private static bool HasAttribute (ICollection<CustomAttribute> attributes,
