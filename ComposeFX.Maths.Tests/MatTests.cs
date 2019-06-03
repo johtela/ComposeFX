@@ -18,6 +18,8 @@
             Arbitrary.Register (ArbitraryMat<Mat4, float> (4, 4));
         }
 
+		public static void Use () {	}
+
 		// TODO: Move to ExtensionCord
 		private static T[] Flatten<T> (T[,] array)
 		{

@@ -12,6 +12,7 @@
     {
 		static QuatTests ()
         {
+			MatTests.Use ();
 			Arbitrary.Register (ArbitraryQuat<Quat, float> ());
         }
 
